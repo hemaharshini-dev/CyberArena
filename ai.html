@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>AI Crime Lab</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+
+  <body>
+    <div class="container">
+      <button class="back-btn" onclick="goHome()">← Back</button>
+
+      <h2>🧠 AI Crime Lab</h2>
+
+      <!-- SCENARIO -->
+      <div class="ai-box">
+        <p id="scenarioText"></p>
+      </div>
+
+      <!-- CLUES -->
+      <h3>🔍 Investigate:</h3>
+      <div id="clues"></div>
+
+      <!-- FEEDBACK -->
+      <div id="feedback"></div>
+
+      <!-- DECISION -->
+      <div id="decision" style="display: none">
+        <button class="primary-btn" onclick="makeDecision(true)">
+          Flag as Fake
+        </button>
+        <button class="secondary-btn" onclick="makeDecision(false)">
+          Trust
+        </button>
+      </div>
+    </div>
+
+    <script src="js/common.js"></script>
+    <script src="js/ai.js"></script>
+  </body>
+</html>

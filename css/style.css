@@ -370,3 +370,36 @@ button {
   background: #00c3ff;
   color: black;
 }
+
+.ai-box {
+  background: #0f172a;
+  padding: 15px;
+  border-radius: 10px;
+  margin: 15px 0;
+  text-align: left;
+  border: 1px solid #1f2937;
+}
+
+#clues button {
+  display: block;
+  width: 100%;
+  margin: 8px 0;
+  padding: 10px;
+
+  background: #111827;
+  border: 1px solid #374151;
+  color: white;
+
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#clues button:hover {
+  background: #00c3ff;
+  color: black;
+}
+
+.found {
+  background: #065f46 !important;
+  color: white;
+}
