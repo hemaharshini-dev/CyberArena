@@ -403,3 +403,32 @@ button {
   background: #065f46 !important;
   color: white;
 }
+
+.log-box {
+  background: #020617;
+  border: 1px solid #1f2937;
+  height: 120px;
+  overflow-y: auto;
+  padding: 10px;
+  font-size: 12px;
+  text-align: left;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  color: #22c55e;
+  font-family: monospace;
+}
+
+.scenario-box {
+  background: #0f172a;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+#healthBar {
+  height: 100%;
+  width: 100%;
+  background: limegreen;
+  transition: width 0.3s ease;
+}
