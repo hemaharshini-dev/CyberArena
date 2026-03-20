@@ -1,0 +1,76 @@
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #0b0f1a;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  text-align: center;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background: #00c3ff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#options button {
+  display: block;
+  margin: 10px auto;
+  width: 200px;
+}
+
+#feedback {
+  margin-top: 20px;
+  font-size: 18px;
+}
+
+#nextBtn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background: limegreen;
+  color: white;
+}
+
+.email-box {
+  background: #1a1f2e;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: left;
+  margin-bottom: 20px;
+  width: 350px;
+}
+
+.email-box p {
+  margin: 5px 0;
+}
+
+.progress-bar {
+  width: 350px;
+  height: 10px;
+  background: #333;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+#progressFill {
+  height: 100%;
+  width: 0%;
+  background: #00c3ff;
+  transition: width 0.3s ease;
+}
+
+.missions button {
+  display: block;
+  margin: 10px auto;
+  width: 250px;
+}

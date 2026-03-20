@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>CyberArena Game</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h2 id="missionTitle"></h2>
+      <h3 id="progressText"></h3>
+      <h3 id="xpDisplay">XP: 0</h3>
+
+      <div class="progress-bar">
+        <div id="progressFill"></div>
+      </div>
+      <h3 id="timer">⏱️ Time Left: 10s</h3>
+      <div class="email-box">
+        <p><strong>From:</strong> <span id="sender"></span></p>
+        <p><strong>Subject:</strong> <span id="subject"></span></p>
+        <hr />
+        <p id="emailBody"></p>
+      </div>
+
+      <div id="options"></div>
+
+      <div id="feedback"></div>
+
+      <button id="nextBtn" style="display: none">Next</button>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
