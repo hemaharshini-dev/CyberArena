@@ -1,0 +1,292 @@
+/* =======================
+   GLOBAL STYLES
+======================= */
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: linear-gradient(135deg, #0b0f1a, #111827);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* =======================
+   CONTAINER
+======================= */
+.container {
+  text-align: center;
+  width: 380px;
+  padding: 20px;
+  background: rgba(26, 31, 46, 0.9);
+  border-radius: 15px;
+  box-shadow: 0 0 25px rgba(0, 195, 255, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+/* =======================
+   HEADINGS
+======================= */
+h1,
+h2 {
+  margin-bottom: 10px;
+}
+
+h3 {
+  margin: 5px 0;
+  font-weight: normal;
+}
+
+/* =======================
+   PROGRESS BAR
+======================= */
+.progress-bar {
+  width: 100%;
+  height: 10px;
+  background: #333;
+  border-radius: 5px;
+  margin: 10px 0;
+  overflow: hidden;
+}
+
+#progressFill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #00c3ff, #007cf0);
+  transition: width 0.4s ease;
+}
+
+/* =======================
+   EMAIL BOX
+======================= */
+.email-box {
+  background: #0f172a;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: left;
+  margin: 15px 0;
+  border: 1px solid #1f2937;
+}
+
+.email-box p {
+  margin: 6px 0;
+  font-size: 14px;
+}
+
+/* =======================
+   BASE BUTTON STYLE
+======================= */
+button {
+  font-family: inherit;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+/* =======================
+   OPTIONS BUTTONS
+======================= */
+#options button {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  padding: 12px;
+  font-size: 14px;
+
+  background: linear-gradient(135deg, #111827, #1f2937);
+  border: 1px solid #374151;
+  color: #e5e7eb;
+
+  border-radius: 10px;
+
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+#options button:hover {
+  background: linear-gradient(135deg, #00c3ff, #007cf0);
+  color: black;
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 20px rgba(0, 195, 255, 0.4);
+}
+
+#options button:active {
+  transform: scale(0.97);
+}
+
+#options button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* =======================
+   NEXT BUTTON (PRIMARY)
+======================= */
+#nextBtn {
+  margin-top: 15px;
+  padding: 12px 20px;
+
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+  font-weight: bold;
+
+  border-radius: 10px;
+
+  box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
+}
+
+#nextBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(34, 197, 94, 0.6);
+}
+
+/* =======================
+   MISSION BUTTONS
+======================= */
+.missions button {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  padding: 14px;
+
+  font-size: 15px;
+  font-weight: 500;
+
+  background: linear-gradient(135deg, #1f2937, #111827);
+  border: 1px solid #374151;
+  color: white;
+
+  border-radius: 12px;
+}
+
+.missions button:hover {
+  background: linear-gradient(135deg, #00c3ff, #007cf0);
+  color: black;
+  transform: scale(1.04);
+  box-shadow: 0 8px 25px rgba(0, 195, 255, 0.4);
+}
+
+/* =======================
+   FEEDBACK
+======================= */
+#feedback {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+/* =======================
+   TIMER
+======================= */
+#timer {
+  margin-top: 5px;
+  color: #00c3ff;
+  font-weight: bold;
+}
+
+/* =======================
+   XP DISPLAY
+======================= */
+#xpDisplay {
+  color: gold;
+  font-weight: bold;
+}
+
+.link {
+  color: #00c3ff;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.preview {
+  font-size: 12px;
+  color: #9ca3af;
+  margin-top: 5px;
+}
+
+.highlight {
+  color: #f87171;
+  font-weight: bold;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  width: 100vw;
+  height: 100vh;
+
+  background: rgba(0, 0, 0, 0.75);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 999; /* VERY IMPORTANT */
+}
+
+.modal-content {
+  background: #1a1f2e;
+  padding: 25px;
+  border-radius: 12px;
+  width: 280px;
+  text-align: center;
+
+  box-shadow: 0 0 25px rgba(0, 195, 255, 0.3);
+}
+
+.modal-content input {
+  display: block;
+  width: 90%;
+  margin: 10px auto;
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+}
+
+.modal-content button {
+  margin-top: 10px;
+  padding: 10px;
+  width: 100%;
+  background: #00c3ff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* =======================
+   PRIMARY BUTTON (REUSABLE)
+======================= */
+.primary-btn {
+  margin-top: 15px;
+  padding: 12px 22px;
+
+  background: linear-gradient(135deg, #00c3ff, #007cf0);
+  color: black;
+
+  font-weight: bold;
+  font-size: 14px;
+
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+
+  box-shadow: 0 4px 15px rgba(0, 195, 255, 0.4);
+  transition: all 0.25s ease;
+}
+
+/* Hover */
+.primary-btn:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 8px 25px rgba(0, 195, 255, 0.6);
+}
+
+/* Click */
+.primary-btn:active {
+  transform: scale(0.96);
+}
