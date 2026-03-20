@@ -290,3 +290,83 @@ button {
 .primary-btn:active {
   transform: scale(0.96);
 }
+
+.chat-box {
+  height: 250px;
+  overflow-y: auto;
+  background: #0f172a;
+  border-radius: 10px;
+  padding: 10px;
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+.message {
+  padding: 8px 12px;
+  margin: 6px 0;
+  border-radius: 10px;
+  max-width: 75%;
+  font-size: 14px;
+}
+
+.bot {
+  background: #1f2937;
+}
+
+.user {
+  background: #00c3ff;
+  color: black;
+  margin-left: auto;
+}
+
+.typing {
+  font-style: italic;
+  color: #9ca3af;
+}
+
+#trustBar {
+  height: 100%;
+  width: 50%;
+  background: orange;
+  transition: width 0.3s;
+}
+
+.secondary-btn {
+  margin-top: 10px;
+  padding: 10px 18px;
+
+  background: transparent;
+  border: 1px solid #374151;
+  color: #9ca3af;
+
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.secondary-btn:hover {
+  border-color: #00c3ff;
+  color: #00c3ff;
+}
+
+.back-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+
+  padding: 6px 12px;
+  font-size: 12px;
+
+  background: transparent;
+  color: #00c3ff;
+
+  border: 1px solid #00c3ff;
+  border-radius: 8px;
+
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.back-btn:hover {
+  background: #00c3ff;
+  color: black;
+}

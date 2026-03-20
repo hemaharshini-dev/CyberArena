@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Social Engineering Simulator</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <button class="back-btn" onclick="goHome()">← Back</button>
+      <h2>🎭 Social Engineering Simulator</h2>
+
+      <!-- TRUST BAR -->
+      <h3 id="trustText">Trust Level: 50</h3>
+      <div class="progress-bar">
+        <div id="trustBar"></div>
+      </div>
+
+      <!-- CHAT -->
+      <div class="chat-box" id="chatBox"></div>
+
+      <!-- OPTIONS -->
+      <div id="options"></div>
+    </div>
+
+    <script src="js/common.js"></script>
+    <script src="js/social.js"></script>
+  </body>
+</html>
