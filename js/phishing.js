@@ -76,6 +76,7 @@ function highlightText(text) {
 // LOAD QUESTION
 // =======================
 function loadQuestion() {
+  document.getElementById("loginModal").style.display = "none";
   const q = scenarios[currentQuestion];
 
   // Progress
@@ -182,15 +183,22 @@ function showResult() {
   else badge = "⚠️ Rookie";
 
   document.body.innerHTML = `
-    <div class="container">
-      <h1>🎉 Mission Complete</h1>
-      <h2>XP: ${score}</h2>
-      <h3>${badge}</h3>
+  <div class="container">
+    <h1>🎉 Mission Complete</h1>
+    <h2>XP: ${score}</h2>
+    <h3>${badge}</h3>
+
+    <div style="margin-top:15px;">
       <button class="primary-btn" onclick="location.reload()">
-  🔁 Play Again
-</button>
+        🔁 Play Again
+      </button>
+
+      <button class="secondary-btn" onclick="goHome()">
+        🏠 Back to Home
+      </button>
     </div>
-  `;
+  </div>
+`;
 }
 
 // =======================
@@ -262,10 +270,15 @@ function handleLogin() {
 // =======================
 loadQuestion();
 
-document.addEventListener("DOMContentLoaded", () => {
-  const loginBtn = document.getElementById("loginBtn");
+const loginBtn = document.getElementById("loginBtn");
 
-  if (loginBtn) {
-    loginBtn.onclick = handleLogin;
+if (loginBtn) {
+  loginBtn.onclick = handleLogin;
+}
+
+window.onclick = function (e) {
+  const modal = document.getElementById("loginModal");
+  if (e.target === modal) {
+    modal.style.display = "none";
   }
-});
+};
