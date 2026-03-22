@@ -1,39 +1,51 @@
-# 🛡️ CyberArena: Gamified Cybersecurity Excellence
+# 🛡️ CyberArena: The Ultimate Cybersecurity Training Ground
 
-**CyberArena** is an immersive, interactive web-based educational platform designed to train users in identifying and mitigating modern cybersecurity threats. Through high-stakes simulations and gamified missions, users evolve from rookies to "Scam Shields" by mastering incident response and threat detection.
+**CyberArena** is an immersive, gamified web-based platform designed to transform users from digital novices into "Elite Guardians." Through high-stakes simulations, neon-drenched missions, and real-time threat detection, users learn to defend against the most sophisticated cyber attacks of the modern age.
 
 ---
 
-## 🚀 Live Features
+## 🚀 Live Missions
 
 ### 1. 🕵️ Phishing Detective
-*   **Real-time Email Analysis:** Inspect headers, body text, and suspicious links.
-*   **Hover-to-Reveal:** Preview actual destination URLs to spot domain spoofing (e.g., `amaz0n.in` vs `amazon.in`).
-*   **Credential Traps:** Interactive login modals that simulate real-world phishing site behavior.
-*   **XP System:** Earn points and badges based on detection accuracy and speed.
+*   **Real-time Analysis:** Inspect headers, body text, and suspicious links.
+*   **Hover-to-Reveal:** Preview destination URLs to spot domain spoofing (e.g., `amaz0n.in` vs `amazon.in`).
+*   **Credential Traps:** Interactive login modals that simulate phishing site behavior.
 
-### 2. 🎭 Social Engineering (Human Firewall)
-*   **Interactive Chat Simulation:** Engage with a simulated attacker posing as "IT Support."
-*   **Trust Meter Mechanics:** A dynamic "Trust Level" bar. Too much trust leads to a security breach; healthy skepticism leads to victory.
-*   **Typing Indicators:** Real-time feedback for a realistic conversational experience.
+### 2. 🎭 Social Engineering
+*   **Human Firewall:** Engage with simulated attackers posing as "IT Support" or "Colleagues."
+*   **Trust Meter Mechanics:** Balance trust and skepticism. Too much trust leads to a breach; healthy skepticism leads to victory.
 
 ### 3. 🤖 AI Crime Lab
 *   **Deepfake Detection:** Analyze "CEO Video Calls" and voice clones for robotic phrasing or unnatural urgency.
-*   **Clue Investigation:** Select and verify specific anomalies (Tone, Language, Context) before making a final verdict.
+*   **Investigation:** Select and verify specific anomalies (Tone, Language, Context) to reach a verdict.
 
 ### 4. 🧩 Malware Escape
-*   **Incident Response Simulation:** Manage a "System Health" bar during an active malware outbreak.
-*   **Critical Decision Path:** Choose between disconnecting the network, running antivirus, or (dangerously) paying the ransom.
-*   **Live Log Terminal:** A real-time console that tracks every action and its impact on the system.
+*   **Incident Response:** Manage "System Health" during an active malware outbreak.
+*   **Terminal Interface:** Use a live console to execute commands like `scan`, `isolate`, or `decrypt` to save the system.
+
+### 5. 🛡️ Password Lab (New!)
+*   **Strength Analysis:** Real-time entropy calculation and "Time to Crack" estimation.
+*   **MFA Simulation:** Experience multi-factor authentication workflows and learn why they are critical.
+
+### 6. 🌐 Dark Web Market (New!)
+*   **Breach Database:** Search for compromised credentials from simulated corporate leaks.
+*   **Risk Assessment:** Evaluate the severity of leaked data (Plaintext vs. Hashed) to determine threat levels.
+
+### 7. 📱 Smishing Simulator (New!)
+*   **Mobile Defense:** Identify malicious SMS messages (Smishing) within a realistic phone interface.
+
+### 8. 🧪 Mission Creator (New!)
+*   **Design Your Own:** Create custom phishing scenarios to train others and export them as JSON.
 
 ---
 
 ## 🛠️ Tech Stack
 
-*   **Frontend:** HTML5, CSS3 (Custom Vanilla CSS with Glassmorphism)
-*   **Logic:** Pure JavaScript (ES6+)
-*   **Design:** Modern Dark-Tech aesthetic with CSS animations, gradients, and responsive layouts.
-*   **Architecture:** Modular mission-based structure for easy scalability.
+*   **Frontend:** HTML5, CSS3 (Retro-Cyberpunk aesthetic with CRT effects, scanlines, and neon animations).
+*   **Database & Auth:** **Firebase** (Firestore for XP/Leaderboard and Firebase Auth for secure login).
+*   **Audio Engine:** **Web Audio API** for an immersive, interactive soundscape (Success/Error/Click sounds).
+*   **Logic:** Modular ES6+ JavaScript.
+*   **Adaptive Learning:** Integrated "Safety Protocols" that provide actionable steps based on user progress.
 
 ---
 
@@ -41,10 +53,10 @@
 
 | Mechanic | Description |
 | :--- | :--- |
-| **XP & Badges** | Rewards for correct identification and fast response times. |
-| **Time Pressure** | Integrated timers force quick decision-making under stress. |
-| **Dynamic Feedback** | Immediate explanations for every correct or incorrect choice to ensure learning. |
-| **Health/Trust Bars** | Visual representations of security status and psychological manipulation. |
+| **XP & Leaderboard** | Earn XP for every successful mission and climb the global ranks. |
+| **System Health** | Visual representation of security status during active attacks. |
+| **Trust Level** | Real-time gauge of psychological manipulation in social engineering. |
+| **Safety Protocols** | Actionable, real-world security tips delivered through the "Adaptive Difficulty" engine. |
 
 ---
 
@@ -52,19 +64,25 @@
 
 ```text
 CyberArena/
-├── index.html          # Main Hub / Mission Selector
-├── phishing.html       # Phishing Mission UI
-├── social.html         # Social Engineering UI
-├── ai.html             # AI Crime Lab UI
-├── malware.html        # Malware Escape UI
+├── index.html          # Mission Hub & Global Leaderboard
+├── login.html          # Firebase-powered Auth Portal
+├── phishing.html       # Phishing Mission
+├── social.html         # Social Engineering Simulator
+├── ai.html             # AI Crime Lab
+├── malware.html        # Malware Escape (Terminal)
+├── password.html       # Password Strength & MFA Lab
+├── darkweb.html        # Breach Search Simulator
+├── smishing.html       # Mobile SMS Simulator
+├── creator.html        # Custom Mission Builder
 ├── css/
-│   └── style.css       # Unified Global Styles & Animations
+│   └── style.css       # Neon-Cyberpunk UI Framework
 └── js/
-    ├── common.js       # Shared logic (Navigation, etc.)
-    ├── phishing.js     # Phishing engine & scenarios
-    ├── social.js       # Chat engine & trust logic
-    ├── ai.js           # Investigation logic
-    └── malware.js      # Incident response & health system
+    ├── firebase.js     # Firebase Config & Initialization
+    ├── auth.js         # Authentication Logic (Google/Email)
+    ├── xp.js           # XP & Firestore Data Management
+    ├── common.js       # Shared Navigation & Audio System
+    ├── adaptive.js     # Safety Protocols & Difficulty Engine
+    ├── ... (Mission Logic Files)
 ```
 
 ---
@@ -75,10 +93,10 @@ CyberArena/
     ```bash
     git clone https://github.com/your-username/CyberArena.git
     ```
-2.  **Run Locally**
-    *   No dependencies required! Simply open `index.html` in any modern web browser.
-3.  **Start a Mission**
-    *   Choose your path from the CyberArena Hub and start securing the digital world.
+2.  **Firebase Setup**
+    *   The project is pre-configured with a demo Firebase project. To use your own, update `js/firebase.js` with your credentials.
+3.  **Run Locally**
+    *   Simply open `index.html` in any modern web browser. (Note: A local server like Live Server is recommended for Firebase modules).
 
 ---
 
