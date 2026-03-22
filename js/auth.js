@@ -17,7 +17,6 @@ window.login = async function () {
 
   try {
     await signInWithEmailAndPassword(auth, email, password);
-    alert("Login successful!");
     window.location.href = "index.html";
   } catch (err) {
     alert(err.message);
@@ -31,7 +30,7 @@ window.register = async function () {
 
   try {
     await createUserWithEmailAndPassword(auth, email, password);
-    alert("Registered successfully!");
+    window.location.href = "index.html";
   } catch (err) {
     alert(err.message);
   }
@@ -42,7 +41,6 @@ window.googleLogin = async function () {
 
   try {
     await signInWithPopup(auth, provider);
-    alert("Google login successful!");
     window.location.href = "index.html";
   } catch (err) {
     alert(err.message);
@@ -52,7 +50,6 @@ window.googleLogin = async function () {
 window.logout = async function () {
   try {
     await signOut(auth);
-    alert("Logged out!");
     window.location.href = "login.html";
   } catch (err) {
     alert(err.message);

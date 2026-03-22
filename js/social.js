@@ -101,10 +101,15 @@ function updateTrust() {
 
 function win() {
   updateXP(20);
-  chatBox.innerHTML += `
-    <p style='color:lightgreen;'>✅ You resisted the attack!</p>
+  
+  // Clear container for final result
+  const container = document.querySelector(".container");
+  container.innerHTML = `
+    <button class="back-btn" onclick="goHome()">← Back</button>
+    <h1>🎉 Mission Complete</h1>
+    <h2 style="color:var(--neon-green);">✅ You resisted the attack!</h2>
     
-    <div class="deep-dive" style="text-align:left; margin-top:20px; padding:15px; background:rgba(0,0,0,0.3); border-radius:10px;">
+    <div class="deep-dive" style="text-align:left; margin-top:20px; padding:20px; background:rgba(0,0,0,0.3); border: 1px solid var(--neon-cyan); border-radius:10px;">
       <h3>📖 Cyber Deep Dive: Social Engineering</h3>
       <p>Social engineering is the psychological manipulation of people into performing actions or divulging confidential information.</p>
       <ul>
@@ -117,20 +122,32 @@ function win() {
 
     <div id="safetyArea"></div>
 
-    <button class="primary-btn" onclick="location.reload()">Play Again</button>
-    <button class="secondary-btn" onclick="goHome()">Back to Missions</button>
+    <div style="margin-top:25px; display:flex; gap:15px; justify-content:center;">
+      <button class="primary-btn" onclick="location.reload()">Play Again</button>
+      <button class="secondary-btn" onclick="goHome()">Back to Home</button>
+    </div>
   `;
   showSafetySteps("social", "safetyArea");
-  optionsDiv.innerHTML = "";
 }
 
 function lose() {
-  chatBox.innerHTML += `
-    <p style='color:red;'>🚨 You were manipulated!</p>
-    <button class="primary-btn" onclick="location.reload()">Try Again</button>
-    <button class="secondary-btn" onclick="goHome()">Back to Missions</button>
+  // Clear container for final result
+  const container = document.querySelector(".container");
+  container.innerHTML = `
+    <button class="back-btn" onclick="goHome()">← Back</button>
+    <h1>💀 Mission Failed</h1>
+    <h2 style="color:var(--neon-magenta);">🚨 You were manipulated!</h2>
+    
+    <div class="protocol-card" style="margin-top:20px;">
+      <h3>⚠️ Warning Issued</h3>
+      <p>Attackers often use urgency and authority to bypass your critical thinking. Always verify the identity of anyone asking for sensitive information.</p>
+    </div>
+
+    <div style="margin-top:25px; display:flex; gap:15px; justify-content:center;">
+      <button class="primary-btn" onclick="location.reload()">Try Again</button>
+      <button class="secondary-btn" onclick="goHome()">Back to Home</button>
+    </div>
   `;
-  optionsDiv.innerHTML = "";
 }
 
 function endGame() {

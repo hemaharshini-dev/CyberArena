@@ -101,12 +101,13 @@ function loadQuestion() {
   document.getElementById("loginModal").style.display = "none";
   const q = scenarios[currentQuestion];
 
-  // Progress
+  // Progress text shows current question
   document.getElementById("progressText").innerText =
     `Question ${currentQuestion + 1}/${scenarios.length}`;
 
+  // Progress bar stays at previous completed state until this one is answered
   document.getElementById("progressFill").style.width =
-    ((currentQuestion + 1) / scenarios.length) * 100 + "%";
+    (currentQuestion / scenarios.length) * 100 + "%";
 
   // Email content
   document.getElementById("sender").innerText = q.sender;
@@ -177,6 +178,10 @@ function checkAnswer(selected) {
       <p>${q.explanation}</p>
     `;
   }
+
+  // Update progress bar on answer
+  document.getElementById("progressFill").style.width =
+    ((currentQuestion + 1) / scenarios.length) * 100 + "%";
 
   document.getElementById("xpDisplay").innerText = `XP: ${score}`;
   document.getElementById("nextBtn").style.display = "block";
@@ -275,6 +280,10 @@ function autoFail() {
     <p>${q.explanation}</p>
   `;
 
+  // Update progress bar
+  document.getElementById("progressFill").style.width =
+    ((currentQuestion + 1) / scenarios.length) * 100 + "%";
+
   document.getElementById("nextBtn").style.display = "block";
 }
 
@@ -299,6 +308,10 @@ function handleLogin() {
   `;
 
   score -= 10;
+
+  // Update progress bar
+  document.getElementById("progressFill").style.width =
+    ((currentQuestion + 1) / scenarios.length) * 100 + "%";
 
   document.getElementById("xpDisplay").innerText = `XP: ${score}`;
   document.getElementById("nextBtn").style.display = "block";
