@@ -1,3 +1,5 @@
+import { updateXP } from "./xp.js";
+
 // =======================
 // VARIABLES
 // =======================
@@ -55,8 +57,27 @@ const scenarios = [
     options: ["Click link", "Check Google account", "Ignore"],
     correct: "Check Google account",
     explanation: "Always verify via official site.",
-  },
+  }
 ];
+
+// AI-Generated Scenario Simulation
+function generateDynamicScenario() {
+  const domains = ["paypal-security-update.com", "netflix-verify-info.net", "apple-billing-issue.org"];
+  const companies = ["PayPal", "Netflix", "Apple"];
+  const index = Math.floor(Math.random() * domains.length);
+  
+  return {
+    sender: `alert@${domains[index]}`,
+    subject: `Action Required: Your ${companies[index]} Account`,
+    body: `We detected unusual activity on your ${companies[index]} account. Please verify your identity immediately to prevent suspension.`,
+    link: `http://${domains[index]}/login`,
+    options: ["Click link", "Verify sender", "Ignore"],
+    correct: "Verify sender",
+    explanation: `Dynamic AI Scenario: Fake domain simulating ${companies[index]}.`
+  };
+}
+
+scenarios.push(generateDynamicScenario());
 
 // =======================
 // HIGHLIGHT TEXT
@@ -182,11 +203,24 @@ function showResult() {
   else if (score >= 20) badge = "🔍 Phishing Detective";
   else badge = "⚠️ Rookie";
 
+  updateXP(score);
+
   document.body.innerHTML = `
   <div class="container">
     <h1>🎉 Mission Complete</h1>
     <h2>XP: ${score}</h2>
     <h3>${badge}</h3>
+
+    <div class="deep-dive" style="text-align:left; margin-top:20px; padding:15px; background:rgba(0,0,0,0.3); border-radius:10px;">
+      <h3>📖 Cyber Deep Dive: Phishing</h3>
+      <p>Phishing is a type of social engineering where attackers masquerade as a trusted entity to steal data.</p>
+      <ul>
+        <li><strong>Smishing:</strong> Phishing via SMS.</li>
+        <li><strong>Vishing:</strong> Phishing via voice calls.</li>
+        <li><strong>Spear Phishing:</strong> Targeted attacks on specific individuals.</li>
+      </ul>
+      <p><em>Real-world Case:</em> The 2020 Twitter hack used social engineering to gain access to internal administrative tools.</p>
+    </div>
 
     <div style="margin-top:15px;">
       <button class="primary-btn" onclick="location.reload()">

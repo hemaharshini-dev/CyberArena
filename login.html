@@ -1,25 +1,31 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
-    <title>Login</title>
+    <meta charset="UTF-8" />
+    <title>Login - CyberArena</title>
     <link rel="stylesheet" href="css/style.css" />
   </head>
 
   <body>
-    <div class="container">
+    <div class="auth-box">
       <h2>🛡️ CyberArena</h2>
       <p class="subtitle">Train. Detect. Defend.</p>
 
-      <input id="email" type="email" placeholder="Enter Email" />
-      <input id="password" type="password" placeholder="Enter Password" />
+      <div class="form-group">
+        <input id="email" type="email" placeholder="Email Address" />
+        <input id="password" type="password" placeholder="Password" />
+      </div>
 
-      <button class="primary-btn" onclick="login()">Login</button>
-      <button class="secondary-btn" onclick="register()">Create Account</button>
+      <div class="button-group">
+        <button class="primary-btn" onclick="login()">Login</button>
+        <button class="secondary-btn" onclick="register()">Create Account</button>
+      </div>
 
-      <div class="divider">OR</div>
+      <div class="divider"><span>OR</span></div>
 
       <button class="google-btn" onclick="googleLogin()">
-        🔵 Sign in with Google
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="18" height="18" alt="Google icon">
+        Sign in with Google
       </button>
     </div>
 

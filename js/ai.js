@@ -1,3 +1,5 @@
+import { updateXP } from "./xp.js";
+
 // =======================
 // VARIABLES
 // =======================
@@ -85,23 +87,33 @@ function makeDecision(userChoice) {
 
   if (userChoice === scenario.correct) {
     score += 10;
+    updateXP(score);
 
     feedback.innerHTML = `
       <p style="color:lightgreen;">✅ Correct!</p>
       <p>You identified an AI-generated scam.</p>
-      <p>Score: ${score}</p>
+      
+      <div class="deep-dive" style="text-align:left; margin-top:20px; padding:15px; background:rgba(0,0,0,0.3); border-radius:10px;">
+        <h3>📖 Cyber Deep Dive: AI & Deepfakes</h3>
+        <p>AI is increasingly used by attackers to create highly realistic "deepfakes" of video, audio, and images.</p>
+        <ul>
+          <li><strong>Deepfake Video:</strong> Swapping faces or synthesizing entire movements.</li>
+          <li><strong>Voice Cloning:</strong> Mimicking someone's voice using as little as 3 seconds of audio.</li>
+          <li><strong>Generative Phishing:</strong> Using LLMs to write perfectly grammatical phishing emails.</li>
+        </ul>
+        <p><em>Real-world Case:</em> In 2024, a finance worker at a multinational firm was tricked into paying out $25 million by a deepfaked CFO in a video call.</p>
+      </div>
 
       <button class="primary-btn" onclick="location.reload()">Play Again</button>
       <button class="secondary-btn" onclick="goHome()">Back</button>
     `;
   } else {
     score -= 10;
+    updateXP(0);
 
     feedback.innerHTML = `
       <p style="color:red;">❌ Wrong!</p>
       <p>You trusted a malicious AI-generated request.</p>
-      <p>Score: ${score}</p>
-
       <button class="primary-btn" onclick="location.reload()">Try Again</button>
       <button class="secondary-btn" onclick="goHome()">Back</button>
     `;
@@ -114,3 +126,6 @@ function makeDecision(userChoice) {
 // INIT
 // =======================
 loadScenario();
+
+document.getElementById("flagBtn").onclick = () => makeDecision(true);
+document.getElementById("trustBtn").onclick = () => makeDecision(false);

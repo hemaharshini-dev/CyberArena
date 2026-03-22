@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="css/style.css" />
   </head>
 
-  <body>
+  <body class="crt">
     <div class="container">
       <button class="back-btn" onclick="goHome()">← Back</button>
 
@@ -26,16 +26,26 @@
 
       <!-- DECISION -->
       <div id="decision" style="display: none">
-        <button class="primary-btn" onclick="makeDecision(true)">
+        <button class="primary-btn" id="flagBtn">
           Flag as Fake
         </button>
-        <button class="secondary-btn" onclick="makeDecision(false)">
+        <button class="secondary-btn" id="trustBtn">
           Trust
         </button>
       </div>
     </div>
 
+    <script type="module">
+      import { auth } from "./js/firebase.js";
+      import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+      onAuthStateChanged(auth, (user) => {
+        if (!user) {
+          window.location.href = "login.html";
+        }
+      });
+    </script>
     <script src="js/common.js"></script>
-    <script src="js/ai.js"></script>
+    <script type="module" src="js/ai.js"></script>
   </body>
 </html>

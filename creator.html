@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Mission Creator - CyberArena</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="container" style="max-width: 800px;">
+      <button class="back-btn" onclick="goHome()">← Back</button>
+      <h2>🧪 Custom Mission Creator</h2>
+      <p>Design your own phishing scenario to train your team.</p>
+
+      <div style="text-align:left; background:#0f172a; padding:20px; border-radius:10px;">
+        <label>Sender Email:</label>
+        <input type="text" id="cSender" placeholder="e.g., admin@company.com" />
+        
+        <label>Subject:</label>
+        <input type="text" id="cSubject" placeholder="e.g., URGENT: Update Password" />
+        
+        <label>Email Body:</label>
+        <textarea id="cBody" rows="4" style="width:100%; padding:10px; border-radius:5px; background:#0d1117; color:white; border:1px solid #30363d;" placeholder="Click here to update your account..."></textarea>
+        
+        <label>Malicious Link URL:</label>
+        <input type="text" id="cLink" placeholder="e.g., http://fake-login.com" />
+      </div>
+
+      <div style="margin-top:20px;">
+        <button class="primary-btn" onclick="generateJSON()">Generate JSON</button>
+      </div>
+
+      <div id="outputArea" style="display:none; margin-top:20px; text-align:left;">
+        <h3>Exported Mission:</h3>
+        <textarea id="jsonOutput" rows="8" style="width:100%; padding:10px; background:#0d1117; color:#00c3ff; border:1px solid #30363d; font-family:monospace;" readonly></textarea>
+        <button class="secondary-btn" onclick="copyToClipboard()" style="margin-top:10px;">Copy to Clipboard</button>
+      </div>
+    </div>
+
+    <script type="module">
+      import { auth } from "./js/firebase.js";
+      import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+      onAuthStateChanged(auth, (user) => { if (!user) window.location.href = "login.html"; });
+    </script>
+    <script src="js/common.js"></script>
+    <script type="module" src="js/creator.js"></script>
+  </body>
+</html>

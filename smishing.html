@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Mobile Smishing Simulator</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+      .phone-frame {
+        width: 300px;
+        height: 500px;
+        border: 12px solid #30363d;
+        border-radius: 30px;
+        margin: 0 auto;
+        background: #0d1117;
+        position: relative;
+        overflow: hidden;
+      }
+      .phone-screen {
+        padding: 20px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+      .sms-bubble {
+        background: #1f2937;
+        padding: 10px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        font-size: 14px;
+        text-align: left;
+      }
+      .sms-sender { font-weight: bold; margin-bottom: 5px; color: #00c3ff; }
+      .sms-link { color: #f87171; text-decoration: underline; cursor: pointer; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <button class="back-btn" onclick="goHome()">← Back</button>
+      <h2>📱 Smishing Simulator</h2>
+      <p>Review the incoming SMS messages and identify the threats.</p>
+
+      <div class="phone-frame">
+        <div class="phone-screen" id="phoneScreen">
+          <!-- Messages will load here -->
+        </div>
+      </div>
+      
+      <div id="feedback" style="margin-top:20px;"></div>
+    </div>
+
+    <script type="module">
+      import { auth } from "./js/firebase.js";
+      import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+      onAuthStateChanged(auth, (user) => { if (!user) window.location.href = "login.html"; });
+    </script>
+    <script src="js/common.js"></script>
+    <script type="module" src="js/smishing.js"></script>
+  </body>
+</html>

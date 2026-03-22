@@ -1,3 +1,5 @@
+import { updateXP } from "./xp.js";
+
 let trust = 50;
 let step = 0;
 
@@ -97,8 +99,21 @@ function updateTrust() {
 }
 
 function win() {
+  updateXP(20);
   chatBox.innerHTML += `
     <p style='color:lightgreen;'>✅ You resisted the attack!</p>
+    
+    <div class="deep-dive" style="text-align:left; margin-top:20px; padding:15px; background:rgba(0,0,0,0.3); border-radius:10px;">
+      <h3>📖 Cyber Deep Dive: Social Engineering</h3>
+      <p>Social engineering is the psychological manipulation of people into performing actions or divulging confidential information.</p>
+      <ul>
+        <li><strong>Pretexting:</strong> Creating a fabricated scenario to steal info.</li>
+        <li><strong>Baiting:</strong> Promising a reward to lure victims.</li>
+        <li><strong>Quid Pro Quo:</strong> Offering a service in exchange for info.</li>
+      </ul>
+      <p><em>Real-world Case:</em> The 2022 Uber breach started with a MFA fatigue attack on an employee.</p>
+    </div>
+
     <button class="primary-btn" onclick="location.reload()">Play Again</button>
     <button class="secondary-btn" onclick="goHome()">Back to Missions</button>
   `;

@@ -1,15 +1,7 @@
-function startMission(type) {
-  window.location.href = type + ".html";
-}
-
-function goHome() {
-  window.location.href = "index.html";
-}
-
 // Immersive Audio System
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-window.playSound = function(type) {
+export function playSound(type) {
     if (audioCtx.state === 'suspended') {
         audioCtx.resume();
     }
@@ -44,11 +36,11 @@ window.playSound = function(type) {
         oscillator.start();
         oscillator.stop(audioCtx.currentTime + 0.05);
     }
-};
+}
 
 // Attach click sound to all buttons globally
 document.addEventListener('click', (e) => {
     if (e.target.tagName === 'BUTTON') {
-        window.playSound('click');
+        playSound('click');
     }
 });
