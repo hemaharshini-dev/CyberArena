@@ -1,4 +1,5 @@
 import { updateXP } from "./xp.js";
+import { showSafetySteps } from "./adaptive.js";
 
 let trust = 50;
 let step = 0;
@@ -68,7 +69,7 @@ function showOptions(options) {
   options.forEach((opt) => {
     const btn = document.createElement("button");
     btn.innerText = opt.text;
-
+    btn.className = "secondary-btn";
     btn.onclick = () => selectOption(opt);
 
     optionsDiv.appendChild(btn);
@@ -114,9 +115,12 @@ function win() {
       <p><em>Real-world Case:</em> The 2022 Uber breach started with a MFA fatigue attack on an employee.</p>
     </div>
 
+    <div id="safetyArea"></div>
+
     <button class="primary-btn" onclick="location.reload()">Play Again</button>
     <button class="secondary-btn" onclick="goHome()">Back to Missions</button>
   `;
+  showSafetySteps("social", "safetyArea");
   optionsDiv.innerHTML = "";
 }
 

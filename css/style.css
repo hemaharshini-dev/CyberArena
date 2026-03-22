@@ -1,15 +1,30 @@
-/* =======================
-   GLOBAL STYLES
-======================= */
-* {
-  box-sizing: border-box;
+/* ============================================================
+   🌌 CYBERARENA: NEON COMMAND CENTER (MAX UI OVERHAUL)
+============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=JetBrains+Mono:wght@300;500&display=swap');
+
+:root {
+  --neon-cyan: #00f3ff;
+  --neon-magenta: #ff00ff;
+  --neon-green: #39ff14;
+  --dark-bg: #050a10;
+  --terminal-bg: rgba(10, 20, 28, 0.95);
+  --border-glow: 0 0 10px rgba(0, 243, 255, 0.5);
+  --font-main: 'JetBrains Mono', monospace;
+  --font-cyber: 'Orbitron', sans-serif;
 }
+
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
-  font-family: "Segoe UI", Arial, sans-serif;
-  background: linear-gradient(135deg, #0b0f1a, #111827);
-  color: white;
+  background-color: var(--dark-bg);
+  background-image: 
+    linear-gradient(rgba(0, 243, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
+  background-size: 30px 30px;
+  color: #e0e6ed;
+  font-family: var(--font-main);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -17,341 +32,166 @@ body {
   overflow-x: hidden;
 }
 
-/* =======================
-   CONTAINER
-======================= */
+/* 💠 CYBER CONTAINER */
 .container {
-  text-align: center;
-  width: 90%;
-  max-width: 600px;
-  padding: 30px;
-  background: rgba(26, 31, 46, 0.9);
-  border-radius: 15px;
-  box-shadow: 0 0 25px rgba(0, 195, 255, 0.2);
-  backdrop-filter: blur(10px);
   position: relative;
-  margin: 20px;
+  background: var(--terminal-bg);
+  width: 95%;
+  max-width: 900px;
+  padding: 40px;
+  border: 2px solid var(--neon-cyan);
+  border-radius: 5px;
+  box-shadow: 
+    0 0 20px rgba(0, 243, 255, 0.2),
+    inset 0 0 15px rgba(0, 243, 255, 0.1);
+  backdrop-filter: blur(15px);
+  clip-path: polygon(0 0, 95% 0, 100% 5%, 100% 100%, 5% 100%, 0 95%);
 }
 
-/* =======================
-   HEADINGS
-======================= */
-h1, h2 {
-  margin-bottom: 20px;
-  color: #00c3ff;
+.container::before {
+  content: "SYSTEM ONLINE // ENCRYPTED";
+  position: absolute;
+  top: -12px;
+  left: 30px;
+  background: var(--dark-bg);
+  padding: 0 10px;
+  color: var(--neon-cyan);
+  font-size: 10px;
+  letter-spacing: 2px;
 }
 
-h3 {
-  margin: 10px 0;
-  font-weight: normal;
-}
-
-/* =======================
-   BUTTONS & INPUTS
-======================= */
+/* ⚡ NEON BUTTONS */
 button {
-  font-family: inherit;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  padding: 14px 24px;
-  font-weight: 700;
+  font-family: var(--font-cyber);
   text-transform: uppercase;
-  letter-spacing: 1px;
-  font-size: 14px;
-  outline: none;
+  font-weight: bold;
+  padding: 15px 30px;
+  border: 1px solid var(--neon-cyan);
+  background: transparent;
+  color: var(--neon-cyan);
+  cursor: pointer;
+  transition: 0.3s;
+  position: relative;
+  overflow: hidden;
+  clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+}
+
+button:hover {
+  background: rgba(0, 243, 255, 0.1);
+  box-shadow: 0 0 15px var(--neon-cyan);
+  transform: translateY(-2px);
 }
 
 .primary-btn {
-  background: linear-gradient(135deg, #00c3ff 0%, #007cf0 100%);
-  color: #0b0f1a;
-  box-shadow: 0 4px 15px rgba(0, 195, 255, 0.3);
+  background: var(--neon-cyan);
+  color: var(--dark-bg);
+  border: none;
 }
 
 .primary-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 195, 255, 0.5);
-  filter: brightness(1.1);
-}
-
-.primary-btn:active {
-  transform: translateY(0);
+  background: #fff;
+  box-shadow: 0 0 30px var(--neon-cyan);
+  color: #000;
 }
 
 .secondary-btn {
-  background: #1f2937;
-  border: 1px solid #374151;
-  color: #e5e7eb;
+  border-color: var(--neon-magenta);
+  color: var(--neon-magenta);
 }
 
 .secondary-btn:hover {
-  background: #374151;
-  border-color: #00c3ff;
-  color: #00c3ff;
+  box-shadow: 0 0 15px var(--neon-magenta);
+  background: rgba(255, 0, 255, 0.1);
 }
 
-.logout-btn {
-  background: rgba(248, 113, 113, 0.1);
-  color: #f87171;
-  border: 1px solid #f87171;
-  padding: 8px 16px;
-  font-size: 12px;
-}
-
-.logout-btn:hover {
-  background: #f87171;
-  color: white;
-}
-
-input {
-  width: 100%;
-  padding: 14px;
-  margin: 10px 0;
-  background: #0d1117;
-  border: 1px solid #30363d;
-  color: white;
-  border-radius: 8px;
-  font-size: 16px;
-  transition: border-color 0.3s;
-}
-
-input:focus {
-  border-color: #00c3ff;
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 195, 255, 0.2);
-}
-
-/* =======================
-   AUTH PAGE
-======================= */
-.auth-box {
-  background: rgba(22, 27, 34, 0.8);
-  padding: 40px;
-  border-radius: 20px;
-  border: 1px solid #30363d;
-  width: 100%;
-  max-width: 400px;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-}
-
-.auth-box h2 {
-  font-size: 28px;
-  margin-bottom: 30px;
-}
-
-.google-btn {
-  background: white;
-  color: #1f2937;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  width: 100%;
-  margin-top: 20px;
-}
-
-.google-btn:hover {
-  background: #f3f4f6;
-}
-
-.back-btn {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  padding: 6px 12px;
-  font-size: 12px;
-  background: transparent;
-  color: #00c3ff;
-  border: 1px solid #00c3ff;
-}
-
-/* =======================
-   MISSIONS GRID
-======================= */
+/* 🗂️ MISSION CARDS */
 .missions {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 15px;
-  margin: 20px 0;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin: 30px 0;
 }
 
 .missions button {
-  height: 100px;
-  font-size: 16px;
-  background: linear-gradient(135deg, #1f2937, #111827);
-  border: 1px solid #374151;
-  color: white;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
 }
 
-.missions button:hover {
-  background: linear-gradient(135deg, #00c3ff, #007cf0);
-  color: black;
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(0, 195, 255, 0.4);
-}
-
-.new-mission {
-  border-color: #f1e05a !important;
-}
-
-/* =======================
-   PROGRESS BARS
-======================= */
+/* 📊 PROGRESS BARS */
 .progress-bar {
-  width: 100%;
-  height: 12px;
-  background: #1f2937;
-  border-radius: 6px;
-  margin: 15px 0;
-  overflow: hidden;
-}
-
-#progressFill, #trustBar, #healthBar, #strengthFill {
-  height: 100%;
-  transition: width 0.4s ease;
-}
-
-#progressFill { background: linear-gradient(90deg, #00c3ff, #007cf0); }
-#trustBar { background: #facc15; }
-#healthBar { background: #f87171; }
-
-/* =======================
-   USER STATS & LEADERBOARD
-======================= */
-.user-stats, .leaderboard {
-  text-align: left;
-  background: rgba(15, 23, 42, 0.5);
-  padding: 20px;
-  border-radius: 10px;
-  margin-top: 20px;
-}
-
-#leaderboardList {
-  list-style: none;
-  padding: 0;
-}
-
-#leaderboardList li {
-  padding: 10px;
-  border-bottom: 1px solid #1f2937;
-  display: flex;
-  justify-content: space-between;
-}
-
-#leaderboardList li:last-child { border: none; }
-
-/* =======================
-   MISSION SPECIFIC UI
-======================= */
-.email-box, .ai-box, .log-box, .chat-box, .scenario-box {
-  background: #0f172a;
-  padding: 20px;
-  border-radius: 10px;
-  text-align: left;
+  background: #111;
+  height: 8px;
+  border: 1px solid #333;
   margin: 20px 0;
-  border: 1px solid #1f2937;
 }
 
+#progressFill { background: var(--neon-cyan); box-shadow: 0 0 10px var(--neon-cyan); }
+#healthBar { background: #ff003c; box-shadow: 0 0 10px #ff003c; }
+
+/* 🛡️ SAFETY PROTOCOL CARD */
+.protocol-card {
+  background: rgba(0, 243, 255, 0.05);
+  border-left: 4px solid var(--neon-green);
+  padding: 20px;
+  margin: 20px 0;
+  text-align: left;
+  animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(-20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* 📜 LOG BOX (TERMINAL LOOK) */
 .log-box {
-  height: 150px;
+  background: #000;
+  border: 1px solid #1a1a1a;
+  padding: 15px;
+  color: var(--neon-green);
+  font-family: 'JetBrains Mono';
+  font-size: 12px;
+  height: 200px;
   overflow-y: auto;
-  font-family: monospace;
-  color: #22c55e;
 }
 
-.chat-box {
-  height: 300px;
-  overflow-y: auto;
-}
-
-.message {
-  padding: 10px;
-  margin: 10px 0;
-  border-radius: 10px;
-  max-width: 80%;
-}
-
-.bot { background: #1f2937; }
-.user { background: #00c3ff; color: black; margin-left: auto; }
-
-/* =======================
-   PASSWORD LAB
-======================= */
-.input-group {
-  display: flex;
-  margin-bottom: 15px;
-}
-
-.input-group input {
-  flex: 1;
-  padding: 12px;
-  background: #0d1117;
-  border: 1px solid #30363d;
-  color: white;
-  border-radius: 10px 0 0 10px;
-}
-
-#toggleView {
-  border-radius: 0 10px 10px 0;
-  background: #1f2937;
-  color: white;
-}
-
-.stats p { margin: 5px 0; font-weight: bold; }
-.feedback-list div { text-align: left; margin: 5px 0; font-size: 14px; }
-
-/* =======================
-   MODALS
-======================= */
-.modal {
-  display: none;
-  position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0,0,0,0.8);
-  justify-content: center; align-items: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background: #1a1f2e;
-  padding: 30px;
-  border-radius: 15px;
-  width: 320px;
-  box-shadow: 0 0 25px rgba(0, 195, 255, 0.3);
-}
-
-.modal-content input {
-  width: 100%;
-  padding: 12px;
-  margin: 15px 0;
-  border-radius: 8px;
-  background: #0d1117;
-  border: 1px solid #30363d;
-  color: white;
-}
-
-/* =======================
-   CRT EFFECT
-======================= */
-.crt::before {
+/* 🧛 CRT & SCANLINES */
+.crt::after {
   content: " ";
   display: block;
   position: fixed;
   top: 0; left: 0; bottom: 0; right: 0;
   background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
               linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-  z-index: 2000;
-  background-size: 100% 2px, 3px 100%;
+  z-index: 9999;
+  background-size: 100% 3px, 3px 100%;
   pointer-events: none;
 }
 
-/* =======================
-   MISC
-======================= */
-.highlight { color: #f87171; font-weight: bold; }
-.link { color: #00c3ff; cursor: pointer; text-decoration: underline; }
-.preview { font-size: 12px; color: #9ca3af; }
-#timer { color: #00c3ff; font-weight: bold; margin-top: 10px; }
-#xpDisplay { color: gold; font-weight: bold; }
+/* 📱 AUTH BOX OVERHAUL */
+.auth-box {
+  background: var(--terminal-bg);
+  border: 2px solid var(--neon-magenta);
+  padding: 50px;
+  box-shadow: 0 0 30px rgba(255, 0, 255, 0.2);
+  clip-path: polygon(0 0, 90% 0, 100% 10%, 100% 100%, 10% 100%, 0 90%);
+}
+
+input {
+  background: #000;
+  border: 1px solid #333;
+  color: var(--neon-cyan);
+  padding: 15px;
+  margin: 10px 0;
+  font-family: var(--font-main);
+}
+
+input:focus {
+  border-color: var(--neon-cyan);
+  outline: none;
+  box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
+}

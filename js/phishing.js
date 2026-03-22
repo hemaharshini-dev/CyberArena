@@ -1,4 +1,5 @@
 import { updateXP } from "./xp.js";
+import { showSafetySteps } from "./adaptive.js";
 
 // =======================
 // VARIABLES
@@ -139,6 +140,7 @@ function loadQuestion() {
   q.options.forEach((option) => {
     const btn = document.createElement("button");
     btn.innerText = option;
+    btn.className = "secondary-btn";
     btn.onclick = () => checkAnswer(option);
     optionsDiv.appendChild(btn);
   });
@@ -206,7 +208,7 @@ function showResult() {
   updateXP(score);
 
   document.body.innerHTML = `
-  <div class="container">
+  <div class="container" id="resultContainer">
     <h1>🎉 Mission Complete</h1>
     <h2>XP: ${score}</h2>
     <h3>${badge}</h3>
@@ -222,6 +224,8 @@ function showResult() {
       <p><em>Real-world Case:</em> The 2020 Twitter hack used social engineering to gain access to internal administrative tools.</p>
     </div>
 
+    <div id="safetyArea"></div>
+
     <div style="margin-top:15px;">
       <button class="primary-btn" onclick="location.reload()">
         🔁 Play Again
@@ -233,6 +237,7 @@ function showResult() {
     </div>
   </div>
 `;
+  showSafetySteps("phishing", "safetyArea");
 }
 
 // =======================

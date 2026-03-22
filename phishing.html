@@ -5,8 +5,9 @@
     <title>Phishing Detective</title>
     <link rel="stylesheet" href="css/style.css" />
   </head>
-  <body>
+  <body class="crt">
     <div class="container">
+      <button class="back-btn" onclick="goHome()">← Back</button>
       <h2>🕵️ Phishing Detective</h2>
 
       <h3 id="progressText"></h3>
@@ -38,7 +39,7 @@
           <input type="text" placeholder="Username" />
           <input type="password" placeholder="Password" />
 
-          <button id="loginBtn">Login</button>
+          <button id="loginBtn" class="primary-btn">Login</button>
         </div>
       </div>
 
@@ -48,7 +49,7 @@
       <!-- FEEDBACK -->
       <div id="feedback"></div>
 
-      <button id="nextBtn" style="display: none">Next</button>
+      <button id="nextBtn" class="primary-btn" style="display: none">Next</button>
     </div>
 
     <script type="module">
