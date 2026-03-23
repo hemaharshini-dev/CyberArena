@@ -5,109 +5,163 @@
     <title>Cyber-Wiki - CyberArena</title>
     <link rel="stylesheet" href="css/style.css" />
     <style>
-        .wiki-section {
-            text-align: left;
-            margin-bottom: 40px;
-            padding: 20px;
-            background: rgba(0, 243, 255, 0.03);
-            border-left: 2px solid var(--neon-cyan);
-        }
-        .wiki-section h2 { color: var(--neon-cyan); font-family: var(--font-cyber); }
-        .wiki-section h3 { color: var(--neon-magenta); }
-        .wiki-nav {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 30px;
-        }
-        .wiki-nav a {
-            padding: 5px 15px;
-            border: 1px solid var(--neon-magenta);
-            color: var(--neon-magenta);
-            text-decoration: none;
-            font-size: 12px;
-            border-radius: 3px;
-        }
-        .wiki-nav a:hover {
-            background: rgba(255, 0, 255, 0.1);
-        }
+      .wiki-section {
+        text-align: left;
+        margin-bottom: 40px;
+        padding: 20px;
+        background: rgba(0, 243, 255, 0.03);
+        border-left: 2px solid var(--neon-cyan);
+      }
+      .wiki-section h2 {
+        color: var(--neon-cyan);
+        font-family: var(--font-cyber);
+      }
+      .wiki-section h3 {
+        color: var(--neon-magenta);
+      }
+      .wiki-nav {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 30px;
+      }
+      .wiki-nav a {
+        padding: 5px 15px;
+        border: 1px solid var(--neon-magenta);
+        color: var(--neon-magenta);
+        text-decoration: none;
+        font-size: 12px;
+        border-radius: 3px;
+      }
+      .wiki-nav a:hover {
+        background: rgba(255, 0, 255, 0.1);
+      }
     </style>
   </head>
   <body>
-    <div class="container" style="max-width: 1000px;">
-      <button class="back-btn" onclick="location.href='index.html'">← Hub</button>
+    <div class="container" style="max-width: 1000px">
+      <button class="back-btn" onclick="goHome()">
+        ← Hub
+      </button>
       <h1>📖 Cyber-Wiki</h1>
       <p>Knowledge is your first line of defense.</p>
 
       <div class="wiki-nav">
-          <a href="#phishing">Phishing</a>
-          <a href="#smishing">Smishing</a>
-          <a href="#vishing">Vishing</a>
-          <a href="#ransomware">Ransomware</a>
-          <a href="#social-eng">Social Engineering</a>
-          <a href="#mfa">MFA</a>
-          <a href="#quishing">Quishing (QR Phishing)</a>
+        <a href="#phishing">Phishing</a>
+        <a href="#smishing">Smishing</a>
+        <a href="#quishing">Quishing (QR Phishing)</a>
+        <a href="#ransomware">Ransomware</a>
+        <a href="#social-eng">Social Engineering</a>
+        <a href="#mfa">MFA</a>
       </div>
 
       <div id="phishing" class="wiki-section">
-          <h2>🕵️ Phishing</h2>
-          <p>Phishing is a type of social engineering where an attacker sends a fraudulent message designed to trick a person into revealing sensitive information or to deploy malicious software on the victim's infrastructure.</p>
-          <h3>How to Spot it:</h3>
-          <ul>
-              <li><strong>Urgency:</strong> Claims like "Account suspended" or "Immediate action required."</li>
-              <li><strong>Fake Domains:</strong> `amaz0n.com` instead of `amazon.com`.</li>
-              <li><strong>Generic Greetings:</strong> "Dear Customer" instead of your name.</li>
-          </ul>
+        <h2>🕵️ Phishing</h2>
+        <p>
+          Phishing is a type of social engineering where an attacker sends a
+          fraudulent message designed to trick a person into revealing sensitive
+          information or to deploy malicious software on the victim's
+          infrastructure.
+        </p>
+        <h3>How to Spot it:</h3>
+        <ul>
+          <li>
+            <strong>Urgency:</strong> Claims like "Account suspended" or
+            "Immediate action required."
+          </li>
+          <li>
+            <strong>Fake Domains:</strong> `amaz0n.com` instead of `amazon.com`.
+          </li>
+          <li>
+            <strong>Generic Greetings:</strong> "Dear Customer" instead of your
+            name.
+          </li>
+        </ul>
       </div>
 
       <div id="smishing" class="wiki-section">
-          <h2>📱 Smishing (SMS Phishing)</h2>
-          <p>Smishing is phishing conducted via Short Message Service (SMS), also known as text messaging.</p>
-          <h3>Common Tactics:</h3>
-          <ul>
-              <li>Fake delivery notifications.</li>
-              <li>Bank security alerts.</li>
-              <li>"Win a Prize" notifications.</li>
-          </ul>
+        <h2>📱 Smishing (SMS Phishing)</h2>
+        <p>
+          Smishing is phishing conducted via Short Message Service (SMS), also
+          known as text messaging.
+        </p>
+        <h3>Common Tactics:</h3>
+        <ul>
+          <li>Fake delivery notifications.</li>
+          <li>Bank security alerts.</li>
+          <li>"Win a Prize" notifications.</li>
+        </ul>
       </div>
 
       <div id="quishing" class="wiki-section">
-          <h2>🔳 Quishing (QR Phishing)</h2>
-          <p>Quishing involves malicious QR codes. Attackers place them in public areas (like parking meters or cafes) to redirect users to phishing sites or download malware.</p>
-          <h3>Defense:</h3>
-          <ul>
-              <li>Never scan QR codes from untrusted sources.</li>
-              <li>Check if a QR code sticker has been placed over a legitimate one.</li>
-              <li>Use a scanner app that previews the URL before opening it.</li>
-          </ul>
+        <h2>🔳 Quishing (QR Phishing)</h2>
+        <p>
+          Quishing involves malicious QR codes. Attackers place them in public
+          areas (like parking meters or cafes) to redirect users to phishing
+          sites or download malware.
+        </p>
+        <h3>Defense:</h3>
+        <ul>
+          <li>Never scan QR codes from untrusted sources.</li>
+          <li>
+            Check if a QR code sticker has been placed over a legitimate one.
+          </li>
+          <li>Use a scanner app that previews the URL before opening it.</li>
+        </ul>
       </div>
 
       <div id="ransomware" class="wiki-section">
-          <h2>🧩 Ransomware</h2>
-          <p>Ransomware is a type of malware that encrypts a victim's files. The attacker then demands a ransom from the victim to restore access to the data upon payment.</p>
-          <h3>Impact:</h3>
-          <p>Ransomware can paralyze entire organizations, from hospitals to government agencies.</p>
+        <h2>🧩 Ransomware</h2>
+        <p>
+          Ransomware is a type of malware that encrypts a victim's files. The
+          attacker then demands a ransom from the victim to restore access to
+          the data upon payment.
+        </p>
+        <h3>Impact:</h3>
+        <p>
+          Ransomware can paralyze entire organizations, from hospitals to
+          government agencies.
+        </p>
       </div>
 
       <div id="social-eng" class="wiki-section">
-          <h2>🎭 Social Engineering</h2>
-          <p>Social engineering is the psychological manipulation of people into performing actions or divulging confidential information.</p>
-          <p>It relies on human error rather than technical vulnerabilities. It's the "human hack."</p>
+        <h2>🎭 Social Engineering</h2>
+        <p>
+          Social engineering is the psychological manipulation of people into
+          performing actions or divulging confidential information.
+        </p>
+        <p>
+          It relies on human error rather than technical vulnerabilities. It's
+          the "human hack."
+        </p>
       </div>
 
       <div id="mfa" class="wiki-section">
-          <h2>🔐 Multi-Factor Authentication (MFA)</h2>
-          <p>MFA is a security system that requires more than one method of authentication from independent categories of credentials to verify the user's identity.</p>
-          <h3>Layers:</h3>
-          <ul>
-              <li>Something you know (Password).</li>
-              <li>Something you have (Phone, Security Key).</li>
-              <li>Something you are (Biometrics).</li>
-          </ul>
+        <h2>🔐 Multi-Factor Authentication (MFA)</h2>
+        <p>
+          MFA is a security system that requires more than one method of
+          authentication from independent categories of credentials to verify
+          the user's identity.
+        </p>
+        <h3>Layers:</h3>
+        <ul>
+          <li>Something you know (Password).</li>
+          <li>Something you have (Phone, Security Key).</li>
+          <li>Something you are (Biometrics).</li>
+        </ul>
       </div>
-
     </div>
 
-    <script type="module" src="js/common.js"></script>
+    <script type="module">
+      import { auth } from "./js/firebase.js";
+      import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+      onAuthStateChanged(auth, (user) => {
+        if (!user) {
+          window.location.href = "login.html";
+        }
+      });
+    </script>
+    <script src="js/common.js"></script>
   </body>
 </html>
