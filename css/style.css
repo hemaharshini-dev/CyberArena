@@ -431,8 +431,43 @@ input:focus {
   border-radius: 5px 0 0 5px;
 }
 
-.input-group button {
-  margin: 0;
-  border-radius: 0 5px 5px 0;
-  clip-path: none; /* Override the polygon for input groups */
+/* ♿ ACCESSIBILITY & USABILITY */
+.high-contrast {
+  --neon-cyan: #000;
+  --neon-magenta: #000;
+  --neon-green: #000;
+  --dark-bg: #fff;
+  --terminal-bg: #fff;
+  --border-glow: none;
+  color: #000 !important;
+}
+
+.high-contrast body {
+  background-image: none !important;
+  background-color: #fff !important;
+  color: #000 !important;
+}
+
+.high-contrast .container {
+  background: #fff !important;
+  border: 2px solid #000 !important;
+  box-shadow: none !important;
+  color: #000 !important;
+}
+
+.high-contrast button {
+  background: #000 !important;
+  color: #fff !important;
+  border: 2px solid #000 !important;
+  box-shadow: none !important;
+  clip-path: none !important;
+}
+
+.high-contrast .section-title {
+  color: #000 !important;
+  border-bottom: 2px solid #000 !important;
+}
+
+.high-contrast .crt::after {
+  display: none !important;
 }

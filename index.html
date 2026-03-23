@@ -14,7 +14,10 @@
 
     <div class="container">
       <div class="top-bar">
-        <p id="userEmail"></p>
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <p id="userEmail"></p>
+            <button class="secondary-btn" onclick="toggleHighContrast()" style="padding: 5px 10px; font-size: 10px;">🌓 High Contrast</button>
+        </div>
         <button class="logout-btn" onclick="logout()">Logout</button>
       </div>
 

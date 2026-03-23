@@ -6,6 +6,17 @@ function goHome() {
   window.location.href = "index.html";
 }
 
+window.toggleHighContrast = function() {
+    document.body.parentElement.classList.toggle('high-contrast');
+    const isHighContrast = document.body.parentElement.classList.contains('high-contrast');
+    localStorage.setItem('high-contrast', isHighContrast);
+};
+
+// Apply preference on load
+if (localStorage.getItem('high-contrast') === 'true') {
+    document.body.parentElement.classList.add('high-contrast');
+}
+
 // Immersive Audio System
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 

@@ -16,6 +16,7 @@ let timer;
 const scenarios = [
   {
     sender: "support@bank-secure.com",
+    actualSender: "scammer-bot-99@hack-hub.xyz",
     subject: "URGENT: Account Suspension",
     body: "Your account will be blocked. Click immediately to verify.",
     link: "http://secure-bank-login.xyz",
@@ -25,6 +26,7 @@ const scenarios = [
   },
   {
     sender: "lottery@winbig.com",
+    actualSender: "unknown-origin@phish-tank.net",
     subject: "🎉 You Won ₹10,00,000!",
     body: "Share OTP to claim your prize.",
     link: "http://claim-prize-fast.xyz",
@@ -34,6 +36,7 @@ const scenarios = [
   },
   {
     sender: "delivery@amaz0n.in",
+    actualSender: "malicious-actor@fake-site.org",
     subject: "Package Delivery Failed",
     body: "Update your address using this link.",
     link: "http://amazon-delivery-update.xyz",
@@ -43,6 +46,7 @@ const scenarios = [
   },
   {
     sender: "hr@job-offer.com",
+    actualSender: "recruit-scam@job-portal.co",
     subject: "Immediate Job Offer",
     body: "Pay ₹500 to confirm your job.",
     link: "http://job-confirmation.xyz",
@@ -52,6 +56,7 @@ const scenarios = [
   },
   {
     sender: "security@google-support.com",
+    actualSender: "account-theft@google-fraud.com",
     subject: "Security Alert",
     body: "Unusual login detected. Click to secure account.",
     link: "http://google-secure-login.xyz",
@@ -69,6 +74,7 @@ function generateDynamicScenario() {
   
   return {
     sender: `alert@${domains[index]}`,
+    actualSender: `malicious@${domains[index].replace('.com', '-fraud.xyz')}`,
     subject: `Action Required: Your ${companies[index]} Account`,
     body: `We detected unusual activity on your ${companies[index]} account. Please verify your identity immediately to prevent suspension.`,
     link: `http://${domains[index]}/login`,
@@ -99,6 +105,7 @@ function highlightText(text) {
 // =======================
 function loadQuestion() {
   document.getElementById("loginModal").style.display = "none";
+  document.getElementById("headerDetails").style.display = "none";
   const q = scenarios[currentQuestion];
 
   // Progress text shows current question
@@ -110,9 +117,16 @@ function loadQuestion() {
     (currentQuestion / scenarios.length) * 100 + "%";
 
   // Email content
-  document.getElementById("sender").innerText = q.sender;
+  const senderEl = document.getElementById("sender");
+  senderEl.innerText = q.sender;
+  document.getElementById("actualSender").innerText = q.actualSender;
   document.getElementById("subject").innerText = q.subject;
   document.getElementById("emailBody").innerHTML = highlightText(q.body);
+
+  senderEl.onclick = () => {
+    const details = document.getElementById("headerDetails");
+    details.style.display = details.style.display === "none" ? "block" : "none";
+  };
 
   const linkEl = document.getElementById("emailLink");
   const previewEl = document.getElementById("urlPreview");

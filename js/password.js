@@ -11,6 +11,15 @@ const simulateMFABtn = document.getElementById("simulateMFA");
 const mfaPrompt = document.getElementById("mfaPrompt");
 const verifyMFABtn = document.getElementById("verifyMFA");
 const mfaCodeInput = document.getElementById("mfaCode");
+const visualizer = document.getElementById("bruteForceVisualizer");
+
+const startFatigueBtn = document.getElementById("startFatigue");
+const fatigueModal = document.getElementById("fatigueModal");
+const approveFatigueBtn = document.getElementById("approveFatigue");
+const denyFatigueBtn = document.getElementById("denyFatigue");
+
+let animationInterval;
+const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
 
 toggleView.onclick = () => {
     if (passwordInput.type === "password") {
@@ -25,7 +34,24 @@ toggleView.onclick = () => {
 passwordInput.oninput = () => {
     const password = passwordInput.value;
     updateAnalysis(password);
+    startBruteForceAnimation(password);
 };
+
+function startBruteForceAnimation(password) {
+    clearInterval(animationInterval);
+    if (!password) {
+        visualizer.innerText = "";
+        return;
+    }
+
+    animationInterval = setInterval(() => {
+        let display = "";
+        for (let i = 0; i < password.length; i++) {
+            display += chars[Math.floor(Math.random() * chars.length)];
+        }
+        visualizer.innerText = display;
+    }, 50);
+}
 
 function updateAnalysis(password) {
     if (!password) {
@@ -140,6 +166,47 @@ verifyMFABtn.onclick = () => {
     }
 };
 
+// MFA FATIGUE SCENARIO
+let fatigueCount = 0;
+let fatigueActive = false;
+
+startFatigueBtn.onclick = () => {
+    fatigueActive = true;
+    fatigueCount = 0;
+    triggerFatiguePush();
+};
+
+function triggerFatiguePush() {
+    if (!fatigueActive) return;
+    
+    fatigueModal.style.display = "flex";
+    fatigueCount++;
+}
+
+approveFatigueBtn.onclick = () => {
+    alert("❌ CRITICAL ERROR: You approved a malicious MFA request! -50 XP");
+    updateXP(-50);
+    fatigueActive = false;
+    fatigueModal.style.display = "none";
+};
+
+denyFatigueBtn.onclick = () => {
+    if (fatigueCount < 3) {
+        fatigueModal.style.display = "none";
+        setTimeout(triggerFatiguePush, 1000); // Simulate rapid push
+    } else {
+        alert("✅ SUCCESS: You resisted the MFA Fatigue attack and reported it! +30 XP");
+        updateXP(30);
+        fatigueActive = false;
+        fatigueModal.style.display = "none";
+    }
+};
+
 window.onclick = (e) => {
     if (e.target === mfaPrompt) mfaPrompt.style.display = "none";
+    if (e.target === fatigueModal) {
+        // In a real fatigue attack, clicking away doesn't stop it!
+        // So we just re-trigger it
+        triggerFatiguePush();
+    }
 };

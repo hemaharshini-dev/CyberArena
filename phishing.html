@@ -20,10 +20,17 @@
       <h3 id="timer">⏱️ Time Left: 10s</h3>
 
       <!-- EMAIL UI -->
-      <div class="email-box">
-        <p><strong>From:</strong> <span id="sender"></span></p>
+      <div class="email-header">
+        <p>
+          <strong>From:</strong> 
+          <span id="sender" style="cursor: pointer; text-decoration: underline; color: var(--neon-cyan);" title="Click to inspect headers"></span>
+          <div id="headerDetails" style="display: none; background: rgba(0,0,0,0.5); padding: 10px; margin-top: 5px; font-size: 10px; border: 1px dashed var(--neon-cyan);">
+            <code>Authentication-Results: spf=fail; dkim=fail;</code><br>
+            <code>X-Original-Sender: <span id="actualSender"></span></code>
+          </div>
+        </p>
         <p><strong>Subject:</strong> <span id="subject"></span></p>
-        <hr />
+      </div>
         <p id="emailBody"></p>
         <p>
           <strong>Link:</strong>
