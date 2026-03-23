@@ -1,8 +1,30 @@
+const cSender = document.getElementById("cSender");
+const cSubject = document.getElementById("cSubject");
+const cBody = document.getElementById("cBody");
+const cLink = document.getElementById("cLink");
+
+const pSender = document.getElementById("pSender");
+const pSubject = document.getElementById("pSubject");
+const pBody = document.getElementById("pBody");
+const pLink = document.getElementById("pLink");
+
+function updatePreview() {
+    pSender.innerText = cSender.value || "(Sender Email)";
+    pSubject.innerText = cSubject.value || "(Subject)";
+    pBody.innerText = cBody.value || "(Email Body)";
+    pLink.innerText = cLink.value ? "Click here to resolve" : "(Link Text)";
+}
+
+cSender.oninput = updatePreview;
+cSubject.oninput = updatePreview;
+cBody.oninput = updatePreview;
+cLink.oninput = updatePreview;
+
 window.generateJSON = () => {
-    const sender = document.getElementById("cSender").value;
-    const subject = document.getElementById("cSubject").value;
-    const body = document.getElementById("cBody").value;
-    const link = document.getElementById("cLink").value;
+    const sender = cSender.value;
+    const subject = cSubject.value;
+    const body = cBody.value;
+    const link = cLink.value;
 
     if(!sender || !subject || !body || !link) {
         alert("Please fill out all fields.");

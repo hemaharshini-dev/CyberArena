@@ -11,18 +11,35 @@
       <h2>🧪 Custom Mission Creator</h2>
       <p>Design your own phishing scenario to train your team.</p>
 
-      <div style="text-align:left; background:#0f172a; padding:20px; border-radius:10px;">
-        <label>Sender Email:</label>
-        <input type="text" id="cSender" placeholder="e.g., admin@company.com" />
-        
-        <label>Subject:</label>
-        <input type="text" id="cSubject" placeholder="e.g., URGENT: Update Password" />
-        
-        <label>Email Body:</label>
-        <textarea id="cBody" rows="4" style="width:100%; padding:10px; border-radius:5px; background:#0d1117; color:white; border:1px solid #30363d;" placeholder="Click here to update your account..."></textarea>
-        
-        <label>Malicious Link URL:</label>
-        <input type="text" id="cLink" placeholder="e.g., http://fake-login.com" />
+      <div style="display: flex; gap: 20px; align-items: start; margin-top: 20px;">
+        <div style="flex: 1; text-align:left; background:#0f172a; padding:20px; border-radius:10px;">
+          <label>Sender Email:</label>
+          <input type="text" id="cSender" placeholder="e.g., admin@company.com" />
+          
+          <label>Subject:</label>
+          <input type="text" id="cSubject" placeholder="e.g., URGENT: Update Password" />
+          
+          <label>Email Body:</label>
+          <textarea id="cBody" rows="4" style="width:100%; padding:10px; border-radius:5px; background:#0d1117; color:white; border:1px solid #30363d;" placeholder="Click here to update your account..."></textarea>
+          
+          <label>Malicious Link URL:</label>
+          <input type="text" id="cLink" placeholder="e.g., http://fake-login.com" />
+        </div>
+
+        <div id="previewPane" style="flex: 1; background: #fff; color: #333; padding: 20px; border-radius: 5px; border: 1px solid #ccc; font-family: Arial, sans-serif; text-align: left;">
+          <h4 style="margin-top: 0; color: #666; border-bottom: 1px solid #eee; padding-bottom: 10px;">📧 Preview</h4>
+          <div style="margin-bottom: 10px;">
+            <strong>From:</strong> <span id="pSender" style="color: #1a73e8;">(Sender Email)</span>
+          </div>
+          <div style="margin-bottom: 10px;">
+            <strong>Subject:</strong> <span id="pSubject" style="font-weight: bold;">(Subject)</span>
+          </div>
+          <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
+          <div id="pBody" style="white-space: pre-wrap; min-height: 100px;">(Email Body)</div>
+          <div style="margin-top: 20px;">
+            <a id="pLink" href="#" onclick="return false;" style="color: #1a73e8; text-decoration: underline;">(Link Text)</a>
+          </div>
+        </div>
       </div>
 
       <div style="margin-top:20px;">

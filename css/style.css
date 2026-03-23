@@ -26,10 +26,39 @@ body {
   color: #e0e6ed;
   font-family: var(--font-main);
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
   overflow-x: hidden;
+}
+
+/* 📡 ACTIVITY TICKER */
+.activity-ticker {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  border-bottom: 1px solid var(--neon-cyan);
+  padding: 10px 0;
+  position: fixed;
+  top: 0;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.ticker-content {
+  white-space: nowrap;
+  display: inline-block;
+  font-family: var(--font-main);
+  font-size: 12px;
+  color: var(--neon-cyan);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  animation: ticker 30s linear infinite;
+}
+
+@keyframes ticker {
+  0% { transform: translateX(100vw); }
+  100% { transform: translateX(-100%); }
 }
 
 /* 💠 CYBER CONTAINER */
@@ -46,6 +75,7 @@ body {
     inset 0 0 15px rgba(0, 243, 255, 0.1);
   backdrop-filter: blur(15px);
   clip-path: polygon(0 0, 95% 0, 100% 5%, 100% 100%, 5% 100%, 0 95%);
+  margin-top: 60px; /* Space for ticker */
 }
 
 .container::before {
@@ -105,11 +135,27 @@ button:hover {
 }
 
 /* 🗂️ MISSION CARDS */
+.mission-section {
+  margin-bottom: 40px;
+  text-align: left;
+}
+
+.section-title {
+  font-family: var(--font-cyber);
+  color: var(--neon-magenta);
+  font-size: 18px;
+  border-bottom: 1px solid rgba(255, 0, 255, 0.3);
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
 .missions {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
-  margin: 30px 0;
+  margin: 20px 0;
 }
 
 .missions button {
@@ -122,11 +168,25 @@ button:hover {
 }
 
 /* 📊 PROGRESS BARS */
+.xp-container {
+  flex-grow: 1;
+  text-align: left;
+}
+
+.rank-label {
+  font-family: var(--font-cyber);
+  color: var(--neon-cyan);
+  font-size: 14px;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
 .progress-bar, .strength-meter {
   background: #111;
   height: 12px;
   border: 1px solid #333;
-  margin: 20px 0;
+  margin: 10px 0;
   overflow: hidden;
   position: relative;
 }
@@ -140,6 +200,47 @@ button:hover {
 #healthBar { background: #ff003c; box-shadow: 0 0 10px #ff003c; }
 #trustBar { background: var(--neon-green); box-shadow: 0 0 10px var(--neon-green); }
 #strengthFill { background: #ff003c; transition: all 0.5s; }
+
+/* 🛡️ PROFILE SECTION */
+.profile-layout {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.achievement-gallery {
+  min-width: 200px;
+  text-align: left;
+}
+
+.achievement-gallery h3 {
+  font-family: var(--font-cyber);
+  color: var(--neon-green);
+  font-size: 14px;
+  text-transform: uppercase;
+  margin-top: 0;
+}
+
+.badge-list {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.badge {
+  font-size: 24px;
+  background: rgba(255, 255, 255, 0.05);
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--neon-green);
+  box-shadow: 0 0 10px rgba(57, 255, 20, 0.2);
+  cursor: help;
+}
 
 /* 🛡️ SAFETY PROTOCOL CARD */
 .protocol-card {
@@ -179,6 +280,31 @@ button:hover {
   z-index: 9999;
   background-size: 100% 3px, 3px 100%;
   pointer-events: none;
+}
+
+/* 🌀 GLITCH EFFECTS */
+@keyframes glitch {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+  100% { transform: translate(0); }
+}
+
+.glitch-active {
+  animation: glitch 0.2s linear infinite;
+  filter: hue-rotate(90deg) saturate(2);
+}
+
+@keyframes flash-red {
+  0% { background-color: rgba(255, 0, 0, 0); }
+  50% { background-color: rgba(255, 0, 0, 0.2); }
+  100% { background-color: rgba(255, 0, 0, 0); }
+}
+
+.critical-flash {
+  animation: flash-red 0.5s ease-in-out;
 }
 
 /* 📱 AUTH BOX OVERHAUL */
