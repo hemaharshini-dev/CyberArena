@@ -22,6 +22,130 @@ if (localStorage.getItem('high-contrast') === 'true') {
 // =====================
 let globalMuted = localStorage.getItem('muted') === 'true';
 let globalVolume = parseFloat(localStorage.getItem('volume') || '0.5');
+let musicOn = localStorage.getItem('musicOn') === 'true';
+
+// =====================
+// AMBIENT MUSIC ENGINE
+// =====================
+const musicCtx = new (window.AudioContext || window.webkitAudioContext)();
+const musicMaster = musicCtx.createGain();
+musicMaster.connect(musicCtx.destination);
+musicMaster.gain.value = 0;
+
+let musicNodes = [];
+let musicScheduler = null;
+
+// Cyberpunk bass drone: layered detuned oscillators
+function startAmbientMusic() {
+    if (musicCtx.state === 'suspended') musicCtx.resume();
+    stopAmbientMusic();
+
+    // Bass drone — two detuned saws for thickness
+    [55, 55.3].forEach(freq => {
+        const osc = musicCtx.createOscillator();
+        const g = musicCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.value = freq;
+        g.gain.value = 0.08;
+        osc.connect(g);
+        g.connect(musicMaster);
+        osc.start();
+        musicNodes.push(osc, g);
+    });
+
+    // Mid pad — slow sine shimmer
+    [110, 165, 220].forEach((freq, i) => {
+        const osc = musicCtx.createOscillator();
+        const g = musicCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        g.gain.value = 0.04;
+        // Slow LFO tremolo
+        const lfo = musicCtx.createOscillator();
+        const lfoGain = musicCtx.createGain();
+        lfo.frequency.value = 0.3 + i * 0.1;
+        lfoGain.gain.value = 0.02;
+        lfo.connect(lfoGain);
+        lfoGain.connect(g.gain);
+        lfo.start();
+        osc.connect(g);
+        g.connect(musicMaster);
+        osc.start();
+        musicNodes.push(osc, g, lfo, lfoGain);
+    });
+
+    // Hi-freq shimmer
+    const shimmer = musicCtx.createOscillator();
+    const shimmerGain = musicCtx.createGain();
+    shimmer.type = 'triangle';
+    shimmer.frequency.value = 880;
+    shimmerGain.gain.value = 0.015;
+    shimmer.connect(shimmerGain);
+    shimmerGain.connect(musicMaster);
+    shimmer.start();
+    musicNodes.push(shimmer, shimmerGain);
+
+    // Rhythmic pulse — soft kick-like thump every ~600ms
+    function schedulePulse() {
+        if (!musicOn) return;
+        const kick = musicCtx.createOscillator();
+        const kickGain = musicCtx.createGain();
+        kick.type = 'sine';
+        kick.frequency.setValueAtTime(120, musicCtx.currentTime);
+        kick.frequency.exponentialRampToValueAtTime(40, musicCtx.currentTime + 0.15);
+        kickGain.gain.setValueAtTime(0.12, musicCtx.currentTime);
+        kickGain.gain.exponentialRampToValueAtTime(0.001, musicCtx.currentTime + 0.2);
+        kick.connect(kickGain);
+        kickGain.connect(musicMaster);
+        kick.start();
+        kick.stop(musicCtx.currentTime + 0.2);
+        musicScheduler = setTimeout(schedulePulse, 600);
+    }
+    schedulePulse();
+
+    // Fade in
+    musicMaster.gain.cancelScheduledValues(musicCtx.currentTime);
+    musicMaster.gain.setValueAtTime(0, musicCtx.currentTime);
+    musicMaster.gain.linearRampToValueAtTime(globalVolume * 0.4, musicCtx.currentTime + 2);
+}
+
+function stopAmbientMusic() {
+    clearTimeout(musicScheduler);
+    musicScheduler = null;
+    // Fade out then disconnect
+    musicMaster.gain.cancelScheduledValues(musicCtx.currentTime);
+    musicMaster.gain.setValueAtTime(musicMaster.gain.value, musicCtx.currentTime);
+    musicMaster.gain.linearRampToValueAtTime(0, musicCtx.currentTime + 0.5);
+    setTimeout(() => {
+        musicNodes.forEach(n => { try { n.stop && n.stop(); n.disconnect && n.disconnect(); } catch(e){} });
+        musicNodes = [];
+    }, 600);
+}
+
+function syncMusicVolume() {
+    if (musicOn && !globalMuted) {
+        musicMaster.gain.cancelScheduledValues(musicCtx.currentTime);
+        musicMaster.gain.setValueAtTime(musicMaster.gain.value, musicCtx.currentTime);
+        musicMaster.gain.linearRampToValueAtTime(globalVolume * 0.4, musicCtx.currentTime + 0.1);
+    }
+}
+
+window.toggleMusic = function() {
+    musicOn = !musicOn;
+    localStorage.setItem('musicOn', musicOn);
+    const btn = document.getElementById('musicBtn');
+    if (musicOn) {
+        btn.innerText = '🎵';
+        btn.title = 'Music: ON';
+        btn.style.color = 'var(--neon-cyan)';
+        startAmbientMusic();
+    } else {
+        btn.innerText = '🎵';
+        btn.title = 'Music: OFF';
+        btn.style.color = '#444';
+        stopAmbientMusic();
+    }
+};
 
 function injectAudioControls() {
     const existing = document.getElementById('audioControlBar');
@@ -31,6 +155,9 @@ function injectAudioControls() {
     bar.id = 'audioControlBar';
     bar.style.cssText = 'position:fixed;bottom:15px;right:15px;z-index:9999;display:flex;align-items:center;gap:8px;background:rgba(0,0,0,0.8);border:1px solid var(--neon-cyan);padding:6px 12px;border-radius:4px;font-size:12px;';
     bar.innerHTML = `
+        <button id="musicBtn" onclick="toggleMusic()" title="Music: ${musicOn ? 'ON' : 'OFF'}"
+            style="padding:3px 8px;font-size:10px;clip-path:none;color:${musicOn ? 'var(--neon-cyan)' : '#444'};">🎵</button>
+        <span style="color:#333;">|</span>
         <span style="color:var(--neon-cyan);">🔊</span>
         <input id="volumeSlider" type="range" min="0" max="1" step="0.05" value="${globalVolume}"
             style="width:70px;accent-color:var(--neon-cyan);cursor:pointer;" title="Volume" />
@@ -41,14 +168,28 @@ function injectAudioControls() {
     document.getElementById('volumeSlider').oninput = (e) => {
         globalVolume = parseFloat(e.target.value);
         localStorage.setItem('volume', globalVolume);
-        if (globalMuted) { globalMuted = false; localStorage.setItem('muted', false); document.getElementById('muteBtn').innerText = '🔈'; }
+        if (globalMuted) {
+            globalMuted = false;
+            localStorage.setItem('muted', false);
+            document.getElementById('muteBtn').innerText = '🔈';
+        }
+        syncMusicVolume();
     };
+
+    // Auto-start music if it was on
+    if (musicOn) startAmbientMusic();
 }
 
 window.toggleMute = function() {
     globalMuted = !globalMuted;
     localStorage.setItem('muted', globalMuted);
     document.getElementById('muteBtn').innerText = globalMuted ? '🔇' : '🔈';
+    if (globalMuted) {
+        musicMaster.gain.cancelScheduledValues(musicCtx.currentTime);
+        musicMaster.gain.linearRampToValueAtTime(0, musicCtx.currentTime + 0.2);
+    } else if (musicOn) {
+        syncMusicVolume();
+    }
 };
 
 document.addEventListener('DOMContentLoaded', injectAudioControls);
