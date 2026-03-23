@@ -28,20 +28,77 @@
         margin-bottom: 10px;
         font-size: 14px;
         text-align: left;
+        cursor: grab;
+        user-select: none;
+        transition: transform 0.15s, box-shadow 0.15s;
+      }
+      .sms-bubble.dragging {
+        opacity: 0.5;
+        cursor: grabbing;
       }
       .sms-sender { font-weight: bold; margin-bottom: 5px; color: #00c3ff; }
       .sms-link { color: #f87171; text-decoration: underline; cursor: pointer; }
+      .drop-bins {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        margin-top: 20px;
+      }
+      .drop-bin {
+        flex: 1;
+        max-width: 180px;
+        min-height: 80px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-family: var(--font-cyber);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: transform 0.2s, box-shadow 0.2s;
+        cursor: pointer;
+      }
+      .drop-bin.scam-bin {
+        border: 2px dashed #f87171;
+        color: #f87171;
+        background: rgba(248,113,113,0.05);
+      }
+      .drop-bin.safe-bin {
+        border: 2px dashed var(--neon-green);
+        color: var(--neon-green);
+        background: rgba(57,255,20,0.05);
+      }
+      .drop-bin.drag-over {
+        transform: scale(1.05);
+        box-shadow: 0 0 15px currentColor;
+      }
     </style>
   </head>
   <body>
     <div class="container">
       <button class="back-btn" onclick="goHome()">← Back</button>
       <h2>📱 Smishing Simulator</h2>
-      <p>Review the incoming SMS messages and identify the threats.</p>
+      <p>Drag the SMS into the correct bin, or use the buttons below.</p>
 
       <div class="phone-frame">
         <div class="phone-screen" id="phoneScreen">
           <!-- Messages will load here -->
+        </div>
+      </div>
+
+      <div class="drop-bins">
+        <div class="drop-bin scam-bin" id="scamBin"
+          ondragover="event.preventDefault(); this.classList.add('drag-over');"
+          ondragleave="this.classList.remove('drag-over');"
+          ondrop="handleDrop(true); this.classList.remove('drag-over');">
+          🚨 Scam
+        </div>
+        <div class="drop-bin safe-bin" id="safeBin"
+          ondragover="event.preventDefault(); this.classList.add('drag-over');"
+          ondragleave="this.classList.remove('drag-over');"
+          ondrop="handleDrop(false); this.classList.remove('drag-over');">
+          ✅ Safe
         </div>
       </div>
       

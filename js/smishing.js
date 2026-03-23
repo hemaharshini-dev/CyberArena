@@ -19,16 +19,25 @@ function loadMessage() {
 
     const msg = messages[currentIndex];
     phoneScreen.innerHTML = `
-        <div class="sms-bubble">
+        <div class="sms-bubble" id="smsBubble" draggable="true">
             <div class="sms-sender">${msg.sender}</div>
             <div>${msg.text} <span class="sms-link">${msg.link}</span></div>
         </div>
         <div style="margin-top:auto;">
-            <button class="primary-btn" onclick="handleDecision(true)" style="width:100%; margin-bottom:10px; background:#f87171; color:white;">Flag as Scam</button>
+            <button class="primary-btn" onclick="handleDecision(true)" style="width:100%; margin-bottom:10px; background:#f87171; color:white;">🚨 Flag as Scam</button>
             <button class="secondary-btn" onclick="handleDecision(false)" style="width:100%;">Mark Safe</button>
         </div>
     `;
+
+    const bubble = document.getElementById('smsBubble');
+    bubble.addEventListener('dragstart', (e) => {
+        bubble.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+    });
+    bubble.addEventListener('dragend', () => bubble.classList.remove('dragging'));
 }
+
+window.handleDrop = (flaggedAsScam) => handleDecision(flaggedAsScam);
 
 window.handleDecision = (flaggedAsScam) => {
     const msg = messages[currentIndex];
