@@ -609,3 +609,170 @@ html.font-lg { font-size: 20px; }
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   }
 }
+
+/* ============================================================
+   🧭 ONBOARDING TOUR
+============================================================ */
+#tour-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 10000;
+  pointer-events: all;
+}
+
+#tour-spotlight {
+  position: absolute;
+  z-index: 10001;
+  border-radius: 6px;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.75);
+  border: 2px solid var(--neon-cyan);
+  box-shadow:
+    0 0 0 4px rgba(0, 243, 255, 0.3),
+    0 0 0 9999px rgba(0, 0, 0, 0.75);
+  pointer-events: none;
+  transition: top 0.3s ease, left 0.3s ease, width 0.3s ease, height 0.3s ease;
+}
+
+#tour-card {
+  position: absolute;
+  z-index: 10002;
+  width: 320px;
+  background: var(--terminal-bg);
+  border: 1px solid var(--neon-cyan);
+  border-radius: 6px;
+  padding: 20px;
+  box-shadow: 0 0 30px rgba(0, 243, 255, 0.25);
+  font-family: var(--font-main);
+  transition: top 0.3s ease, left 0.3s ease;
+}
+
+#tour-step-counter {
+  font-size: 10px;
+  color: #666;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+#tour-card h3 {
+  color: var(--neon-cyan);
+  font-family: var(--font-cyber);
+  font-size: 14px;
+  margin: 0 0 10px;
+}
+
+#tour-card p {
+  font-size: 13px;
+  color: #c0c8d0;
+  line-height: 1.6;
+  margin: 0 0 16px;
+}
+
+#tour-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.tour-btn-primary {
+  font-family: var(--font-cyber);
+  font-size: 11px;
+  padding: 8px 16px;
+  background: var(--neon-cyan);
+  color: var(--dark-bg);
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  clip-path: none;
+  text-transform: uppercase;
+}
+
+.tour-btn-primary:hover {
+  background: #fff;
+  box-shadow: 0 0 12px var(--neon-cyan);
+  transform: none;
+}
+
+.tour-btn-secondary {
+  font-family: var(--font-cyber);
+  font-size: 11px;
+  padding: 8px 14px;
+  background: transparent;
+  color: var(--neon-cyan);
+  border: 1px solid var(--neon-cyan);
+  border-radius: 3px;
+  cursor: pointer;
+  clip-path: none;
+  text-transform: uppercase;
+}
+
+.tour-btn-secondary:hover {
+  background: rgba(0, 243, 255, 0.1);
+  transform: none;
+  box-shadow: none;
+}
+
+.tour-btn-skip {
+  font-family: var(--font-main);
+  font-size: 11px;
+  padding: 4px 8px;
+  background: transparent;
+  color: #555;
+  border: none;
+  cursor: pointer;
+  clip-path: none;
+  text-decoration: underline;
+  text-transform: none;
+}
+
+.tour-btn-skip:hover {
+  color: #888;
+  background: transparent;
+  box-shadow: none;
+  transform: none;
+}
+
+#tour-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 14px;
+}
+
+.tour-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #333;
+  border: 1px solid #555;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.tour-dot.active {
+  background: var(--neon-cyan);
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 6px var(--neon-cyan);
+}
+
+.tour-highlight {
+  position: relative;
+  z-index: 10001;
+}
+
+/* Replay tour button in top bar */
+#replayTourBtn {
+  font-size: 10px;
+  padding: 5px 10px;
+  clip-path: none;
+  border-color: #444;
+  color: #666;
+}
+
+#replayTourBtn:hover {
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
+  box-shadow: none;
+}

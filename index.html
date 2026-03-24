@@ -32,6 +32,7 @@
         <div style="display: flex; gap: 10px; align-items: center;">
             <p id="userEmail"></p>
             <button class="secondary-btn" onclick="toggleHighContrast()" style="padding: 5px 10px; font-size: 10px;">🌓 High Contrast</button>
+            <button id="replayTourBtn" class="secondary-btn" onclick="replayTour()" title="Replay the onboarding tour">🧭 Tour</button>
         </div>
         <button class="logout-btn" onclick="logout()">Logout</button>
       </div>
@@ -129,6 +130,7 @@
       import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
       import { getUserData } from "./js/xp.js";
       import { collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+      import { initTour } from "./js/tour.js";
 
       async function loadLeaderboard() {
         try {
@@ -235,6 +237,8 @@
             }
             await loadLeaderboard();
             startActivityTicker();
+            // Start tour after everything is loaded
+            initTour();
           } catch (error) {
             console.error("Error loading user data:", error);
           }
