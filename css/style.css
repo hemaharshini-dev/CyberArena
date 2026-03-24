@@ -477,6 +477,50 @@ input:focus {
   display: none !important;
 }
 
+.high-contrast * {
+  color: #000 !important;
+  background-color: transparent !important;
+  border-color: #000 !important;
+}
+
+.high-contrast .container,
+.high-contrast .modal-content,
+.high-contrast .auth-box {
+  background: #fff !important;
+}
+
+.high-contrast button,
+.high-contrast input {
+  background: #000 !important;
+  color: #fff !important;
+}
+
+.high-contrast .progress-bar,
+.high-contrast .strength-meter,
+.high-contrast .log-box,
+.high-contrast .chat-box {
+  background: #f0f0f0 !important;
+  border: 2px solid #000 !important;
+}
+
+.high-contrast #progressFill,
+.high-contrast #healthBar,
+.high-contrast #trustBar,
+.high-contrast #strengthFill {
+  background: #000 !important;
+  box-shadow: none !important;
+}
+
+.high-contrast .modal {
+  background: rgba(255, 255, 255, 0.95) !important;
+}
+
+.high-contrast code {
+  background: #f0f0f0 !important;
+  border: 1px solid #000 !important;
+  padding: 2px 4px;
+}
+
 /* ============================================================
    ♿ ACCESSIBILITY — FOCUS STYLES & ARIA
 ============================================================ */
