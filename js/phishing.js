@@ -281,7 +281,7 @@ function showResult() {
   else if (score >= 20) badge = "🔍 Phishing Detective";
   else badge = "⚠️ Rookie";
 
-  updateXP(score);
+  updateXP(score, 'phishing');
 
   document.body.innerHTML = `
   <div class="container" id="resultContainer">

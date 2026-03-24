@@ -781,3 +781,41 @@ html.font-lg { font-size: 20px; }
   color: var(--neon-cyan);
   box-shadow: none;
 }
+
+/* ============================================================
+   🎮 HOW TO PLAY MODAL
+============================================================ */
+#howToPlayModal .modal-content {
+  animation: slideUp 0.4s ease-out;
+  max-height: 85vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--neon-cyan) #111;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+#howToPlayModal .modal-content ul {
+  padding-left: 18px;
+  color: #c0c8d0;
+}
+
+#howToPlayModal .modal-content li {
+  margin-bottom: 6px;
+}
+
+/* ============================================================
+   ✅ MISSION TRACKER
+============================================================ */
+#missionTracker {
+  border-top: 1px solid rgba(0, 243, 255, 0.15);
+  padding-top: 12px;
+}
+
+#missionCheckList div {
+  padding: 2px 0;
+  transition: color 0.2s;
+}

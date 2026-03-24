@@ -119,7 +119,7 @@ window.handleDecision = (flaggedAsScam) => {
     if (flaggedAsScam === msg.isPhishing) {
         const extra = msg.qrCode?.warning ? `<br><small style="color:#fbbf24;">💡 ${msg.qrCode.warning}</small>` : '';
         feedback.innerHTML = `<span style="color:lightgreen;" role="alert">✅ [CORRECT] Good call!</span>${extra}`;
-        updateXP(10);
+        updateXP(10, 'smishing');
         totalXP += 10;
         correctCount++;
     } else {

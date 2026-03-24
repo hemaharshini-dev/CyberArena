@@ -112,7 +112,7 @@ function makeDecision(userChoice) {
 
   if (correct) {
     score += 10;
-    updateXP(score);
+    updateXP(score, 'ai');
   } else {
     score -= 10;
     updateXP(0);

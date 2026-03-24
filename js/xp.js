@@ -5,25 +5,30 @@ import {
   setDoc,
   updateDoc,
   increment,
+  arrayUnion,
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-export async function updateXP(points) {
+export async function updateXP(points, missionId = null) {
   const user = auth.currentUser;
   if (!user) return;
 
   const userRef = doc(db, "users", user.uid);
   const userSnap = await getDoc(userRef);
 
+  const updateData = {
+    xp: increment(points),
+    missionsCompleted: increment(1),
+  };
+  if (missionId) updateData.completedMissions = arrayUnion(missionId);
+
   if (userSnap.exists()) {
-    await updateDoc(userRef, {
-      xp: increment(points),
-      missionsCompleted: increment(1),
-    });
+    await updateDoc(userRef, updateData);
   } else {
     await setDoc(userRef, {
       email: user.email,
       xp: points,
       missionsCompleted: 1,
+      completedMissions: missionId ? [missionId] : [],
       achievements: [],
     });
   }

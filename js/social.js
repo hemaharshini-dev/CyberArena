@@ -115,7 +115,7 @@ function updateTrust() {
 }
 
 function win() {
-  updateXP(20);
+  updateXP(20, 'social');
   const container = document.querySelector(".container");
   container.innerHTML = `
     <button class="back-btn" onclick="goHome()">← Back</button>

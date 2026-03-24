@@ -185,7 +185,7 @@ function triggerFatiguePush() {
 }
 
 approveFatigueBtn.onclick = () => {
-    updateXP(-50);
+    updateXP(-50, 'password');
     fatigueActive = false;
     fatigueModal.style.display = "none";
     showPasswordCompletion(false);
@@ -196,7 +196,7 @@ denyFatigueBtn.onclick = () => {
         fatigueModal.style.display = "none";
         setTimeout(triggerFatiguePush, 1000);
     } else {
-        updateXP(30);
+        updateXP(30, 'password');
         fatigueActive = false;
         fatigueModal.style.display = "none";
         showPasswordCompletion(true);

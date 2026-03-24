@@ -33,12 +33,49 @@
             <p id="userEmail"></p>
             <button class="secondary-btn" onclick="toggleHighContrast()" style="padding: 5px 10px; font-size: 10px;">🌓 High Contrast</button>
             <button id="replayTourBtn" class="secondary-btn" onclick="replayTour()" title="Replay the onboarding tour">🧭 Tour</button>
+            <button class="secondary-btn" onclick="showHowToPlay()" title="How to play CyberArena" style="padding: 5px 10px; font-size: 10px;">🎮 Guide</button>
         </div>
         <button class="logout-btn" onclick="logout()">Logout</button>
       </div>
 
       <h1>🛡️ CyberArena</h1>
       <p>Select Your Mission</p>
+
+      <!-- How to Play Modal -->
+      <div id="howToPlayModal" class="modal" style="display:none;">
+        <div class="modal-content" style="max-width:600px; padding:30px;">
+          <h2 style="color:var(--neon-cyan); margin-top:0;">🎮 How to Play CyberArena</h2>
+          <div style="text-align:left; line-height:1.8;">
+            <p><strong>Welcome, Guardian!</strong> CyberArena is your training ground to become a cybersecurity expert.</p>
+            
+            <h3 style="color:var(--neon-magenta); font-size:14px; margin-top:20px;">🎯 Your Mission</h3>
+            <ul style="font-size:13px;">
+              <li>Complete <strong>9 interactive missions</strong> across Social Engineering, Technical Defense, and Tools & Knowledge</li>
+              <li>Earn <strong>XP</strong> for every correct decision — wrong answers cost you points</li>
+              <li>Climb from <strong>Novice → Specialist → Elite Guardian</strong> as you level up</li>
+            </ul>
+
+            <h3 style="color:var(--neon-magenta); font-size:14px; margin-top:20px;">⚡ Key Features</h3>
+            <ul style="font-size:13px;">
+              <li><strong>Adaptive Difficulty:</strong> Missions get harder as you rank up (faster timers, extra steps)</li>
+              <li><strong>Real-World Cases:</strong> Learn from actual breaches like the $25M deepfake fraud and LinkedIn hack</li>
+              <li><strong>Safety Protocols:</strong> Get actionable security tips after every mission</li>
+              <li><strong>Global Leaderboard:</strong> Compete with other players for the top 5 spots</li>
+            </ul>
+
+            <h3 style="color:var(--neon-magenta); font-size:14px; margin-top:20px;">💡 Pro Tips</h3>
+            <ul style="font-size:13px;">
+              <li>Hover over links to reveal the real URL before clicking</li>
+              <li>Check email headers by clicking the sender address</li>
+              <li>Use the 🧭 Tour button anytime to replay the guided walkthrough</li>
+              <li>Enable High Contrast mode for better readability</li>
+            </ul>
+
+            <p style="margin-top:20px; font-size:12px; color:#888;">💾 Your progress is saved automatically. You can close the browser and come back anytime.</p>
+          </div>
+          <button class="primary-btn" onclick="closeHowToPlay()" style="margin-top:20px; width:100%;">Got It — Let's Start!</button>
+        </div>
+      </div>
 
       <div class="mission-section" id="tour-social">
         <h3 class="section-title">🎭 Social Engineering</h3>
@@ -98,6 +135,13 @@
             </div>
             <p id="userXP">XP: Loading...</p>
             <p id="missionsCompleted">Missions Completed: Loading...</p>
+            <button id="shareScoreBtn" class="secondary-btn" onclick="shareScore()" style="margin-top:10px; padding:8px 16px; font-size:11px; display:none;">📤 Share Your Score</button>
+            
+            <!-- Mission Completion Tracker -->
+            <div id="missionTracker" style="margin-top:20px; display:none;">
+              <h4 style="font-size:12px; color:var(--neon-cyan); margin-bottom:8px;">✅ Completed Missions</h4>
+              <div id="missionCheckList" style="font-size:11px; line-height:1.8; color:#9ca3af;"></div>
+            </div>
             </div>
           </div>
           
@@ -213,6 +257,28 @@
               // Show profile data, hide skeleton
               document.getElementById("profileSkeleton").style.display = "none";
               document.getElementById("profileData").style.display = "block";
+              document.getElementById("shareScoreBtn").style.display = "block";
+
+              // Mission Completion Tracker
+              const completedMissions = userData.completedMissions || [];
+              const allMissions = [
+                { id: 'phishing', name: '🕵️ Phishing Detective' },
+                { id: 'social', name: '🎭 Social Engineering' },
+                { id: 'smishing', name: '📱 Smishing Simulator' },
+                { id: 'ai', name: '🤖 AI Crime Lab' },
+                { id: 'malware', name: '🧩 Malware Escape' },
+                { id: 'password', name: '🛡️ Password Lab' },
+                { id: 'darkweb', name: '🌐 Dark Web Market' },
+                { id: 'creator', name: '🧪 Mission Creator' },
+                { id: 'wiki', name: '📖 Cyber-Wiki' }
+              ];
+              
+              const missionCheckList = document.getElementById('missionCheckList');
+              missionCheckList.innerHTML = allMissions.map(m => {
+                const completed = completedMissions.includes(m.id);
+                return `<div>${completed ? '✅' : '⬜'} ${m.name}</div>`;
+              }).join('');
+              document.getElementById('missionTracker').style.display = 'block';
 
               // Achievements Display
               const badgeList = document.getElementById("badgeList");
@@ -237,6 +303,14 @@
             }
             await loadLeaderboard();
             startActivityTicker();
+            
+            // Show How to Play modal on first login
+            if (!localStorage.getItem('cyberarena_guide_seen')) {
+              setTimeout(() => {
+                document.getElementById('howToPlayModal').style.display = 'flex';
+              }, 800);
+            }
+            
             // Start tour after everything is loaded
             initTour();
           } catch (error) {
@@ -257,5 +331,35 @@
     </script>
     <script type="module" src="js/auth.js"></script>
     <script src="js/common.js"></script>
+    <script>
+      function showHowToPlay() {
+        document.getElementById('howToPlayModal').style.display = 'flex';
+      }
+
+      function closeHowToPlay() {
+        document.getElementById('howToPlayModal').style.display = 'none';
+        localStorage.setItem('cyberarena_guide_seen', '1');
+      }
+
+      // Close modal on backdrop click
+      document.getElementById('howToPlayModal').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('howToPlayModal')) closeHowToPlay();
+      });
+
+      function shareScore() {
+        const xp = document.getElementById('userXP').innerText;
+        const rank = document.getElementById('rankLabel').innerText;
+        const missions = document.getElementById('missionsCompleted').innerText;
+        const text = `🛡️ CyberArena Training Report\n${rank}\n${xp}\n${missions}\n\nI'm training to become an Elite Guardian in cybersecurity! Try CyberArena 🔗`;
+        
+        if (navigator.share) {
+          navigator.share({ title: 'CyberArena Score', text });
+        } else {
+          navigator.clipboard.writeText(text).then(() => {
+            alert('📋 Score copied to clipboard! Paste it anywhere to share.');
+          });
+        }
+      }
+    </script>
   </body>
 </html>

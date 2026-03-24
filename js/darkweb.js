@@ -41,11 +41,11 @@ window.submitAssessment = (level) => {
 
     if (window.currentQuery === "corp.com" && level === "Critical") {
         resultsBox.innerHTML += `<br/><span style="color:lightgreen;" role="alert">✅ [CORRECT] Plaintext passwords are a critical risk.</span>`;
-        updateXP(20);
+        updateXP(20, 'darkweb');
         correct = true;
     } else if (window.currentQuery === "secure.net" && level === "Low") {
         resultsBox.innerHTML += `<br/><span style="color:lightgreen;" role="alert">✅ [CORRECT] Hashed passwords take time to crack, lower immediate risk.</span>`;
-        updateXP(20);
+        updateXP(20, 'darkweb');
         correct = true;
     } else {
         resultsBox.innerHTML += `<br/><span style="color:red;" role="alert">❌ [WRONG] Incorrect risk assessment.</span>`;
