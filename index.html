@@ -241,6 +241,16 @@
             initTour();
           } catch (error) {
             console.error("Error loading user data:", error);
+            // Graceful offline / network failure fallback
+            document.getElementById("profileSkeleton").style.display = "none";
+            document.getElementById("profileData").style.display = "block";
+            document.getElementById("userXP").innerText = "XP: unavailable (offline)";
+            document.getElementById("missionsCompleted").innerText = "";
+            document.getElementById("rankLabel").innerText = "Rank: --";
+            document.getElementById("leaderboardSkeleton").style.display = "none";
+            document.getElementById("leaderboardList").innerHTML = "<li style='color:#666;'>Leaderboard unavailable — check your connection.</li>";
+            document.getElementById("leaderboardList").style.display = "block";
+            startActivityTicker();
           }
         }
       });

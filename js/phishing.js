@@ -363,29 +363,32 @@ function autoFail() {
 // =======================
 function handleLogin() {
   clearInterval(timer);
-
-  // Close modal
   document.getElementById("loginModal").style.display = "none";
 
-  // Disable buttons
-  document.querySelectorAll("#options button").forEach((btn) => {
-    btn.disabled = true;
-  });
-
-  // Show feedback like WRONG answer
-  document.getElementById("feedback").innerHTML = `
-    <p style="color:red;">❌ Wrong!</p>
-    <p>🚨 You entered credentials into a phishing site.</p>
+  // "You've been phished" full-screen flash
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(255,0,0,0.85);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;animation:phishFlash 0.3s ease-out;';
+  overlay.innerHTML = `
+    <div style="font-family:var(--font-cyber);color:#fff;text-align:center;">
+      <div style="font-size:64px;margin-bottom:10px;">🎣</div>
+      <div style="font-size:28px;font-weight:bold;letter-spacing:3px;">YOU'VE BEEN PHISHED</div>
+      <div style="font-size:13px;margin-top:12px;color:rgba(255,255,255,0.8);font-family:var(--font-main);">Your credentials were just stolen. -10 XP</div>
+    </div>
   `;
+  document.body.appendChild(overlay);
 
-  score -= 10;
-
-  // Update progress bar
-  document.getElementById("progressFill").style.width =
-    ((currentQuestion + 1) / scenarios.length) * 100 + "%";
-
-  document.getElementById("xpDisplay").innerText = `XP: ${score}`;
-  document.getElementById("nextBtn").style.display = "block";
+  setTimeout(() => {
+    overlay.remove();
+    document.querySelectorAll("#options button").forEach(btn => btn.disabled = true);
+    document.getElementById("feedback").innerHTML = `
+      <p style="color:red;">❌ [WRONG]</p>
+      <p>🚨 You entered credentials into a phishing site. Attackers now have your password.</p>
+    `;
+    score -= 10;
+    document.getElementById("progressFill").style.width = ((currentQuestion + 1) / scenarios.length) * 100 + "%";
+    document.getElementById("xpDisplay").innerText = `XP: ${score}`;
+    document.getElementById("nextBtn").style.display = "block";
+  }, 1800);
 }
 
 // =======================

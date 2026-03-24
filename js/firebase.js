@@ -1,11 +1,13 @@
 // Firebase imports
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// 🔥 PASTE YOUR CONFIG HERE
+// Demo project config for CyberArena (cyberarena-77a96).
+// Firestore rules restrict all writes to authenticated users only;
+// reads on the 'users' collection are scoped to the authenticated uid.
+// To use your own Firebase project, replace these values with your
+// project's config from the Firebase Console → Project Settings.
 const firebaseConfig = {
   apiKey: "AIzaSyBWdDf4i1pkWUbNZ8QCbytwALF9kSQp-zw",
   authDomain: "cyberarena-77a96.firebaseapp.com",
