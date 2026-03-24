@@ -1,5 +1,5 @@
 import { updateXP } from "./xp.js";
-import { showSafetySteps } from "./adaptive.js";
+import { showSafetySteps, getAdaptiveContent } from "./adaptive.js";
 
 // =======================
 // VARIABLES
@@ -8,6 +8,7 @@ let currentQuestion = 0;
 let score = 0;
 
 let timeLeft = 10;
+let timerDuration = 10; // adaptive: overridden on init
 let timer;
 
 // =======================
@@ -319,7 +320,7 @@ function showResult() {
 // TIMER
 // =======================
 function startTimer() {
-  timeLeft = 10;
+  timeLeft = timerDuration;
 
   document.getElementById("timer").innerText = `⏱️ Time Left: ${timeLeft}s`;
 
@@ -391,16 +392,20 @@ function handleLogin() {
 // INIT
 // =======================
 async function init() {
+  const adaptive = await getAdaptiveContent('phishing');
+  timerDuration = adaptive.timerSeconds;
+  timeLeft = timerDuration;
+
   const aiScenario = await generateDynamicScenario();
   scenarios.push(aiScenario);
 
-  // Show AI badge on the last scenario indicator
   const aiLabel = document.getElementById('aiModeLabel');
   if (aiLabel) {
     const usedAPI = !!localStorage.getItem('openrouter_api_key');
     aiLabel.innerHTML = usedAPI
       ? `🤖 <span style="color:var(--neon-green);">AI Mode: Live API</span>`
       : `🤖 <span style="color:#fbbf24;">AI Mode: Local Engine</span>`;
+    aiLabel.innerHTML += ` &nbsp;|&nbsp; <span style="color:var(--neon-cyan);">🎯 ${adaptive.level}</span>`;
     aiLabel.style.display = 'block';
   }
 

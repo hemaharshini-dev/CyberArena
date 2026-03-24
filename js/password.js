@@ -1,4 +1,5 @@
 import { updateXP } from "./xp.js";
+import { showSafetySteps } from "./adaptive.js";
 
 const passwordInput = document.getElementById("passwordInput");
 const strengthFill = document.getElementById("strengthFill");
@@ -184,23 +185,55 @@ function triggerFatiguePush() {
 }
 
 approveFatigueBtn.onclick = () => {
-    alert("❌ CRITICAL ERROR: You approved a malicious MFA request! -50 XP");
     updateXP(-50);
     fatigueActive = false;
     fatigueModal.style.display = "none";
+    showPasswordCompletion(false);
 };
 
 denyFatigueBtn.onclick = () => {
     if (fatigueCount < 3) {
         fatigueModal.style.display = "none";
-        setTimeout(triggerFatiguePush, 1000); // Simulate rapid push
+        setTimeout(triggerFatiguePush, 1000);
     } else {
-        alert("✅ SUCCESS: You resisted the MFA Fatigue attack and reported it! +30 XP");
         updateXP(30);
         fatigueActive = false;
         fatigueModal.style.display = "none";
+        showPasswordCompletion(true);
     }
 };
+
+function showPasswordCompletion(resistedFatigue) {
+    const container = document.querySelector(".container");
+    container.innerHTML = `
+        <button class="back-btn" onclick="goHome()">← Back</button>
+        <h2>🛡️ Password Lab — Mission Complete</h2>
+        <p style="color:${resistedFatigue ? 'var(--neon-green)' : 'var(--neon-magenta)'}">
+            ${resistedFatigue
+                ? '✅ [SUCCESS] You resisted the MFA Fatigue attack! +30 XP'
+                : '❌ [FAILED] You approved a malicious MFA request. -50 XP'}
+        </p>
+
+        <div class="deep-dive" style="text-align:left; margin-top:20px; padding:15px; background:rgba(0,0,0,0.3); border-radius:10px;">
+            <h3>📖 Cyber Deep Dive: Password Security & MFA</h3>
+            <p>Weak passwords and MFA fatigue are two of the most exploited attack vectors in modern breaches.</p>
+            <ul>
+                <li><strong>LinkedIn Breach (2012):</strong> 117 million passwords leaked as unsalted SHA-1 hashes. Within days, the majority were cracked using rainbow tables — demonstrating why hashing alone is insufficient.</li>
+                <li><strong>Collection #1 (2019):</strong> 773 million email/password combos compiled from hundreds of breaches were posted publicly, enabling mass credential stuffing attacks.</li>
+                <li><strong>MFA Fatigue (Uber, 2022):</strong> An attacker bombarded an employee with MFA push notifications until they approved one out of frustration — bypassing MFA entirely without stealing the code.</li>
+                <li><strong>Best Practice:</strong> Use a password manager, enable phishing-resistant MFA (hardware keys or passkeys), and never approve unexpected MFA prompts.</li>
+            </ul>
+        </div>
+
+        <div id="safetyArea"></div>
+
+        <div style="margin-top:20px; display:flex; gap:15px; flex-wrap:wrap;">
+            <button class="primary-btn" onclick="location.reload()">🔁 Try Again</button>
+            <button class="secondary-btn" onclick="goHome()">🏠 Back to Home</button>
+        </div>
+    `;
+    showSafetySteps("password", "safetyArea");
+}
 
 window.onclick = (e) => {
     if (e.target === mfaPrompt) mfaPrompt.style.display = "none";
