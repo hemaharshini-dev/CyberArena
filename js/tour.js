@@ -18,19 +18,19 @@ const steps = [
     position: 'bottom',
   },
   {
-    target: '.mission-section:nth-of-type(1)',
+    target: '#tour-social',
     title: '🎭 Social Engineering Missions',
     text: 'Start here. These missions teach you to recognise phishing emails, resist manipulation from fake IT support, and spot smishing (SMS scams). Click any mission button to begin.',
     position: 'bottom',
   },
   {
-    target: '.mission-section:nth-of-type(2)',
+    target: '#tour-technical',
     title: '💻 Technical Defense Missions',
     text: 'Hands-on technical simulations — detect AI deepfakes, respond to a live ransomware outbreak in a terminal, test password strength, and investigate dark web data breaches.',
     position: 'bottom',
   },
   {
-    target: '.mission-section:nth-of-type(3)',
+    target: '#tour-tools',
     title: '🛠️ Tools & Knowledge',
     text: 'Build your own phishing scenario in the Mission Creator to train others, or visit the Cyber-Wiki for reference articles on every threat type covered in the app.',
     position: 'top',
