@@ -151,10 +151,13 @@ CyberArena/
 3.  **Run Locally**
     *   Open `index.html` in any modern web browser. A local server (e.g., VS Code Live Server) is recommended for Firebase ES modules to load correctly.
 4.  **(Optional) Enable Live AI Scenarios**
-    *   Get a free API key from [OpenRouter](https://openrouter.ai) and run this in the browser console on the Phishing mission:
+    *   Get a free API key from [OpenRouter](https://openrouter.ai).
+    *   Open the Phishing Detective mission in your browser, press **F12** to open DevTools, and click the **Console** tab.
+    *   Paste the following and press Enter — do **not** run this in a terminal:
     ```js
     setAIKey('your-openrouter-api-key')
     ```
+    *   You'll see a confirmation alert. Reload the page — the AI label will show **AI Mode: Live API** in green.
 
 ---
 
