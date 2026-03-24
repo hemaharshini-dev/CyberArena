@@ -66,25 +66,77 @@ const scenarios = [
   }
 ];
 
-// AI-Generated Scenario Simulation
-function generateDynamicScenario() {
-  const domains = ["paypal-security-update.com", "netflix-verify-info.net", "apple-billing-issue.org"];
-  const companies = ["PayPal", "Netflix", "Apple"];
-  const index = Math.floor(Math.random() * domains.length);
-  
+// AI-Generated Scenario Engine
+const AI_SCENARIO_POOL = [
+  { company: "PayPal", domain: "paypal-secure-verify.net", action: "verify your payment method" },
+  { company: "Netflix", domain: "netflix-billing-update.org", action: "update your billing details" },
+  { company: "Apple", domain: "apple-id-locked.com", action: "unlock your Apple ID" },
+  { company: "Microsoft", domain: "microsoft-account-alert.xyz", action: "confirm your account" },
+  { company: "Amazon", domain: "amazon-order-issue.info", action: "resolve a delivery problem" },
+  { company: "Instagram", domain: "instagram-verify-account.net", action: "verify your identity" },
+  { company: "DHL", domain: "dhl-customs-fee.xyz", action: "pay a customs clearance fee" },
+  { company: "IRS", domain: "irs-tax-refund-claim.com", action: "claim your tax refund" }
+];
+
+const URGENCY_PHRASES = [
+  "Your account will be permanently suspended in 24 hours.",
+  "Unusual sign-in activity detected from an unknown device.",
+  "Your payment failed. Immediate action required.",
+  "We have placed a temporary hold on your account.",
+  "Your subscription has been compromised. Act now."
+];
+
+function buildLocalAIScenario() {
+  const pool = AI_SCENARIO_POOL;
+  const pick = pool[Math.floor(Math.random() * pool.length)];
+  const urgency = URGENCY_PHRASES[Math.floor(Math.random() * URGENCY_PHRASES.length)];
+  const options = [["Click link", "Verify sender", "Ignore"], ["Click link", "Check official app", "Ignore"]];
+  const opts = options[Math.floor(Math.random() * options.length)];
   return {
-    sender: `alert@${domains[index]}`,
-    actualSender: `malicious@${domains[index].replace('.com', '-fraud.xyz')}`,
-    subject: `Action Required: Your ${companies[index]} Account`,
-    body: `We detected unusual activity on your ${companies[index]} account. Please verify your identity immediately to prevent suspension.`,
-    link: `http://${domains[index]}/login`,
-    options: ["Click link", "Verify sender", "Ignore"],
-    correct: "Verify sender",
-    explanation: `Dynamic AI Scenario: Fake domain simulating ${companies[index]}.`
+    sender: `security@${pick.domain}`,
+    actualSender: `noreply@${pick.domain.replace(/\.(net|org|com|xyz|info)$/, '-fraud.xyz')}`,
+    subject: `⚠️ Action Required: Your ${pick.company} Account`,
+    body: `${urgency} Please ${pick.action} immediately to restore full access.`,
+    link: `http://${pick.domain}/verify`,
+    options: opts,
+    correct: opts[1],
+    explanation: `🤖 AI Scenario: Fake ${pick.company} domain. Real ${pick.company} emails come from @${pick.company.toLowerCase()}.com only.`,
+    aiGenerated: true
   };
 }
 
-scenarios.push(generateDynamicScenario());
+async function fetchAIScenario() {
+  const apiKey = localStorage.getItem('openrouter_api_key');
+  if (!apiKey) return null;
+  try {
+    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+      signal: AbortSignal.timeout(5000),
+      body: JSON.stringify({
+        model: 'mistralai/mistral-7b-instruct:free',
+        messages: [{
+          role: 'user',
+          content: 'Generate a realistic phishing email scenario as JSON with fields: sender, actualSender, subject, body, link, options (array of 3 strings), correct (one of the options), explanation. Make it educational. Return ONLY valid JSON, no markdown.'
+        }],
+        max_tokens: 300
+      })
+    });
+    const data = await res.json();
+    const text = data.choices?.[0]?.message?.content?.trim();
+    if (!text) return null;
+    const scenario = JSON.parse(text);
+    scenario.aiGenerated = true;
+    return scenario;
+  } catch {
+    return null;
+  }
+}
+
+async function generateDynamicScenario() {
+  const aiScenario = await fetchAIScenario();
+  return aiScenario || buildLocalAIScenario();
+}
 
 // =======================
 // HIGHLIGHT TEXT
@@ -122,6 +174,10 @@ function loadQuestion() {
   document.getElementById("actualSender").innerText = q.actualSender;
   document.getElementById("subject").innerText = q.subject;
   document.getElementById("emailBody").innerHTML = highlightText(q.body);
+
+  // Show AI badge if this is an AI-generated scenario
+  const aiLabel = document.getElementById('aiModeLabel');
+  if (aiLabel) aiLabel.style.opacity = q.aiGenerated ? '1' : '0.3';
 
   senderEl.onclick = () => {
     const details = document.getElementById("headerDetails");
@@ -334,7 +390,24 @@ function handleLogin() {
 // =======================
 // INIT
 // =======================
-loadQuestion();
+async function init() {
+  const aiScenario = await generateDynamicScenario();
+  scenarios.push(aiScenario);
+
+  // Show AI badge on the last scenario indicator
+  const aiLabel = document.getElementById('aiModeLabel');
+  if (aiLabel) {
+    const usedAPI = !!localStorage.getItem('openrouter_api_key');
+    aiLabel.innerHTML = usedAPI
+      ? `🤖 <span style="color:var(--neon-green);">AI Mode: Live API</span>`
+      : `🤖 <span style="color:#fbbf24;">AI Mode: Local Engine</span>`;
+    aiLabel.style.display = 'block';
+  }
+
+  loadQuestion();
+}
+
+init();
 
 const loginBtn = document.getElementById("loginBtn");
 
@@ -348,3 +421,6 @@ window.onclick = function (e) {
     modal.style.display = "none";
   }
 };
+
+// Allow setting API key from console: setAIKey('your-key')
+window.setAIKey = (key) => { localStorage.setItem('openrouter_api_key', key); alert('API key saved. Reload to use live AI scenarios.'); };
