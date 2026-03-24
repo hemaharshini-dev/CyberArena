@@ -1,51 +1,38 @@
 import { auth } from "./firebase.js";
 
-import { signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {
-  GoogleAuthProvider,
-  signInWithPopup,
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { signOut, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-// LOGIN
-window.login = async function () {
+async function login() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
-
   try {
     await signInWithEmailAndPassword(auth, email, password);
     window.location.href = "index.html";
   } catch (err) {
     alert(err.message);
   }
-};
+}
 
-// REGISTER
-window.register = async function () {
+async function register() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
-
   try {
     await createUserWithEmailAndPassword(auth, email, password);
     window.location.href = "index.html";
   } catch (err) {
     alert(err.message);
   }
-};
+}
 
-window.googleLogin = async function () {
+async function googleLogin() {
   const provider = new GoogleAuthProvider();
-
   try {
     await signInWithPopup(auth, provider);
     window.location.href = "index.html";
   } catch (err) {
     alert(err.message);
   }
-};
+}
 
 window.logout = async function () {
   try {
@@ -56,7 +43,10 @@ window.logout = async function () {
   }
 };
 
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+// Wire up login page buttons if present
+document.getElementById("loginBtn")?.addEventListener("click", login);
+document.getElementById("registerBtn")?.addEventListener("click", register);
+document.getElementById("googleBtn")?.addEventListener("click", googleLogin);
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
