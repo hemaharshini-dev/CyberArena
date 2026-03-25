@@ -474,6 +474,12 @@ input:focus {
   border-bottom: 2px solid #000 !important;
 }
 
+.high-contrast .activity-ticker {
+  background: #fff !important;
+  border-bottom: 2px solid #000 !important;
+  z-index: 1001 !important;
+}
+
 .high-contrast .crt::after {
   display: none !important;
 }
