@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Incident Response Simulator - CyberArena</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+      .ir-scene {
+        background: rgba(0,0,0,0.6);
+        border: 1px solid var(--neon-cyan);
+        border-radius: 4px;
+        padding: 24px;
+        margin: 20px 0;
+        text-align: left;
+        animation: phishFlash 0.4s ease-out;
+      }
+      .ir-scene h3 {
+        color: var(--neon-cyan);
+        font-family: var(--font-cyber);
+        margin-top: 0;
+        font-size: 15px;
+        letter-spacing: 1px;
+      }
+      .ir-scene p { line-height: 1.8; font-size: 14px; color: #c0c8d0; }
+
+      .ir-choices { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+      .ir-choice {
+        background: transparent;
+        border: 1px solid #333;
+        color: #c0c8d0;
+        padding: 12px 18px;
+        text-align: left;
+        font-family: var(--font-main);
+        font-size: 13px;
+        clip-path: none;
+        text-transform: none;
+        font-weight: normal;
+        cursor: pointer;
+        transition: 0.2s;
+        border-radius: 3px;
+      }
+      .ir-choice:hover { border-color: var(--neon-cyan); color: var(--neon-cyan); background: rgba(0,243,255,0.05); }
+
+      .consequence-bad {
+        border-left: 4px solid #ff003c;
+        background: rgba(255,0,60,0.06);
+        padding: 16px;
+        margin: 16px 0;
+        border-radius: 3px;
+        font-size: 13px;
+        color: #ff6b6b;
+        animation: slideIn 0.4s ease-out;
+      }
+      .consequence-good {
+        border-left: 4px solid var(--neon-green);
+        background: rgba(57,255,20,0.05);
+        padding: 16px;
+        margin: 16px 0;
+        border-radius: 3px;
+        font-size: 13px;
+        color: var(--neon-green);
+        animation: slideIn 0.4s ease-out;
+      }
+      .damage-screen {
+        text-align: center;
+        padding: 30px;
+        border: 2px solid #ff003c;
+        background: rgba(255,0,60,0.08);
+        border-radius: 4px;
+        animation: phishFlash 0.5s ease-out;
+      }
+      .damage-screen h2 { color: #ff003c; font-family: var(--font-cyber); }
+      .damage-list { text-align: left; margin: 20px auto; max-width: 500px; }
+      .damage-list li { color: #ff6b6b; margin: 8px 0; font-size: 13px; }
+
+      .success-screen {
+        text-align: center;
+        padding: 30px;
+        border: 2px solid var(--neon-green);
+        background: rgba(57,255,20,0.05);
+        border-radius: 4px;
+        animation: phishFlash 0.5s ease-out;
+      }
+      .success-screen h2 { color: var(--neon-green); font-family: var(--font-cyber); }
+
+      .ir-progress {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 20px;
+        align-items: center;
+      }
+      .ir-step-dot {
+        width: 10px; height: 10px;
+        border-radius: 50%;
+        background: #222;
+        border: 1px solid #444;
+        transition: 0.3s;
+      }
+      .ir-step-dot.done { background: var(--neon-green); border-color: var(--neon-green); }
+      .ir-step-dot.bad  { background: #ff003c; border-color: #ff003c; }
+      .ir-step-dot.current { background: var(--neon-cyan); border-color: var(--neon-cyan); box-shadow: 0 0 6px var(--neon-cyan); }
+
+      .damage-meter {
+        height: 10px;
+        background: #111;
+        border: 1px solid #333;
+        margin: 10px 0 20px;
+        overflow: hidden;
+        border-radius: 2px;
+      }
+      .damage-fill {
+        height: 100%;
+        background: #ff003c;
+        box-shadow: 0 0 8px #ff003c;
+        transition: width 0.5s ease;
+      }
+
+      .scenario-tag {
+        display: inline-block;
+        font-size: 10px;
+        padding: 2px 8px;
+        border: 1px solid var(--neon-magenta);
+        color: var(--neon-magenta);
+        border-radius: 2px;
+        margin-bottom: 12px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" style="max-width:860px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <button class="back-btn" onclick="goHome()">← Hub</button>
+        <span id="xpDisplay" style="color:var(--neon-cyan);font-size:12px;"></span>
+      </div>
+
+      <h1>🚨 Incident Response Simulator</h1>
+      <p style="color:#888;font-size:13px;">Every decision has consequences. One wrong call can cascade into a full breach.</p>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; margin:10px 0 4px;">
+        <span style="font-size:11px;color:#555;letter-spacing:1px;">BREACH DAMAGE</span>
+        <span id="damageLabel" style="font-size:11px;color:#ff003c;">0%</span>
+      </div>
+      <div class="damage-meter"><div class="damage-fill" id="damageFill" style="width:0%;"></div></div>
+
+      <div class="ir-progress" id="progressDots"></div>
+
+      <div id="missionArea"></div>
+    </div>
+
+    <script type="module">
+      import { auth } from "./js/firebase.js";
+      import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+      import { updateXP, getUserData } from "./js/xp.js";
+      import { showSafetySteps } from "./js/adaptive.js";
+      import { guardMission } from "./js/guard.js";
+
+      onAuthStateChanged(auth, async (user) => {
+        if (!user) { window.location.href = "login.html"; return; }
+        await guardMission('incident');
+        const data = await getUserData();
+        const xp = data?.xp || 0;
+        document.getElementById("xpDisplay").innerText = `⚡ ${xp} XP`;
+        startSimulator();
+      });
+
+      // ── SCENARIO TREE ──────────────────────────────────────────
+      // Each node: { id, tag, title, body, choices: [{text, next, damage, consequence, good}] }
+      // damage: points added to breach damage meter (0–100)
+      // terminal nodes have no choices — show end screen
+
+      const scenarios = {
+        s1: {
+          tag: "📧 Phishing Email",
+          title: "Suspicious Email Received",
+          body: `It's 9:02 AM. You receive an email from <strong style="color:#ff6b6b;">it-support@corp-helpdesk.net</strong> saying:<br><br>
+                 <em>"Urgent: Your VPN credentials have expired. Click here to re-authenticate within 30 minutes or lose access."</em><br><br>
+                 The link points to <code>vpn-corp-login.net/auth</code>. Your manager is in a meeting. What do you do?`,
+          choices: [
+            { text: "Click the link and re-enter your credentials — you can't afford to lose VPN access.", next: "s2_bad", damage: 35, consequence: "You entered your credentials into a fake login page. Your VPN username and password are now in attacker hands." },
+            { text: "Forward the email to your real IT team and ask if it's legitimate.", next: "s2_good", damage: 0, consequence: "Smart move. IT confirms it's a phishing attempt and blocks the domain within minutes.", good: true },
+            { text: "Ignore it — probably spam.", next: "s2_ignore", damage: 10, consequence: "You ignored it, but the attacker's campaign is still active. A colleague clicks the same link 20 minutes later." },
+          ]
+        },
+        s2_bad: {
+          tag: "🔑 Credential Theft",
+          title: "Your Credentials Are Compromised",
+          body: `The attacker now has your VPN credentials. Within minutes they log in remotely and begin exploring your company's internal network.<br><br>
+                 Your IT monitoring system flags an unusual login from <strong style="color:#ff6b6b;">IP: 185.220.101.47 (Tor exit node)</strong> at 9:14 AM.<br><br>
+                 The alert lands in your inbox. What do you do?`,
+          choices: [
+            { text: "Dismiss it — probably a false positive from the VPN re-auth.", next: "s3_bad", damage: 30, consequence: "It wasn't a false positive. The attacker now has 20 minutes of undetected access to internal file shares." },
+            { text: "Immediately change your VPN password and report the alert to IT Security.", next: "s3_good", damage: 0, consequence: "You contained it fast. IT revokes the session and begins forensic analysis.", good: true },
+          ]
+        },
+        s2_good: {
+          tag: "✅ Threat Contained",
+          title: "Phishing Attempt Blocked",
+          body: `IT Security confirms the phishing domain and blocks it across the organisation. They send a company-wide alert.<br><br>
+                 Two hours later, you receive a call from someone claiming to be from <strong style="color:var(--neon-cyan);">"Microsoft Support"</strong>. They say your machine has been flagged for malware and they need remote access to fix it.<br><br>
+                 What do you do?`,
+          choices: [
+            { text: "Grant them remote access — Microsoft called, so it must be legitimate.", next: "s3_bad2", damage: 40, consequence: "Microsoft never cold-calls users. You just gave an attacker full remote control of your machine." },
+            { text: "Hang up and report the call to IT Security as a vishing attempt.", next: "s3_good2", damage: 0, consequence: "Correct. This is a classic vishing (voice phishing) follow-up attack. IT logs it and updates defences.", good: true },
+          ]
+        },
+        s2_ignore: {
+          tag: "⚠️ Colleague Breached",
+          title: "A Colleague Clicked the Link",
+          body: `Your colleague Sarah clicked the phishing link and entered her credentials. The attacker now has access to the HR system she uses.<br><br>
+                 Sarah messages you: <em>"I think I just clicked something bad. My screen went blank for a second."</em><br><br>
+                 What do you advise?`,
+          choices: [
+            { text: "Tell her it's probably fine and to restart her computer.", next: "s3_bad", damage: 25, consequence: "It wasn't fine. The attacker exfiltrated 3,000 employee records from the HR system while you waited." },
+            { text: "Tell her to immediately disconnect from the network and call IT Security.", next: "s3_good", damage: 0, consequence: "Fast action. IT isolates Sarah's machine and begins incident response before data is exfiltrated.", good: true },
+          ]
+        },
+        s3_bad: {
+          tag: "💀 Ransomware Deployed",
+          title: "Ransomware Is Now Spreading",
+          body: `The attacker has deployed ransomware across the network. Files on shared drives are being encrypted. A ransom note appears on screens across the office:<br><br>
+                 <em style="color:#ff6b6b;">"Your files are encrypted. Pay 50 BTC within 48 hours or all data will be published."</em><br><br>
+                 The CEO asks: should we pay?`,
+          choices: [
+            { text: "Pay the ransom — we need our files back immediately.", next: "end_bad", damage: 25, consequence: "Payment sent. The attackers take the money and provide a partial decryption key. 40% of files remain encrypted. The attack is reported in the news." },
+            { text: "Refuse to pay. Isolate all systems and restore from last night's backup.", next: "end_partial", damage: 5, consequence: "Backups were 18 hours old. Some data is lost, but the company recovers without funding the attackers.", good: true },
+          ]
+        },
+        s3_good: {
+          tag: "🛡️ Breach Contained",
+          title: "Attacker Session Terminated",
+          body: `IT Security has revoked the attacker's session and is conducting a forensic sweep. They find the attacker had accessed two internal folders but exfiltrated nothing yet.<br><br>
+                 The CISO asks you to help draft the incident report. Which details are most critical to include?`,
+          choices: [
+            { text: "Just note that a suspicious login occurred and was blocked.", next: "end_partial", damage: 5, consequence: "The report is too vague. Regulators later flag it as insufficient documentation of a potential data breach." },
+            { text: "Document: attack vector, timeline, affected systems, data accessed, and remediation steps taken.", next: "end_good", damage: 0, consequence: "Thorough documentation. The company passes the regulatory audit and uses the report to improve defences.", good: true },
+          ]
+        },
+        s3_bad2: {
+          tag: "💻 Remote Access Granted",
+          title: "Attacker Has Full Control",
+          body: `The attacker now has remote access to your machine. They install a keylogger and begin moving laterally through the network using your credentials.<br><br>
+                 Your screen starts behaving strangely — windows opening and closing. What do you do?`,
+          choices: [
+            { text: "Restart the computer — that usually fixes things.", next: "end_bad", damage: 30, consequence: "Restarting didn't help. The keylogger persists. The attacker has now captured credentials for 12 internal systems." },
+            { text: "Immediately pull the ethernet cable, disable Wi-Fi, and call IT Security.", next: "end_partial", damage: 5, consequence: "Physical isolation stops the lateral movement. IT recovers your machine and resets all affected credentials.", good: true },
+          ]
+        },
+        s3_good2: {
+          tag: "✅ Vishing Blocked",
+          title: "Social Engineering Attempt Logged",
+          body: `IT Security logs the vishing attempt. They identify it as part of a coordinated campaign targeting your industry sector this week.<br><br>
+                 They ask you to help run a 5-minute awareness briefing for your team. What's the single most important thing to tell them?`,
+          choices: [
+            { text: "\"Never click links in emails.\"", next: "end_partial", damage: 0, consequence: "Useful but incomplete. Links in legitimate emails are fine — the issue is verifying the sender and destination.", good: true },
+            { text: "\"Verify every unexpected request through a second, independent channel before acting — regardless of who it appears to be from.\"", next: "end_good", damage: 0, consequence: "Perfect. This single principle defeats phishing, vishing, smishing, and social engineering in one rule.", good: true },
+          ]
+        },
+        end_bad: {
+          terminal: true, outcome: "bad",
+          title: "Full Breach — Company Data Leaked",
+          summary: [
+            "💸 Ransom paid: $2.1M in Bitcoin",
+            "📁 14,000 employee records exfiltrated and published on dark web",
+            "📰 Breach reported in national news — reputational damage severe",
+            "⚖️ Regulatory fine issued for inadequate incident response",
+            "🔒 3 weeks of downtime to rebuild systems from scratch"
+          ],
+          lesson: "A single phishing click cascaded into a full ransomware breach. Every delay in response multiplied the damage.",
+          xp: 10
+        },
+        end_partial: {
+          terminal: true, outcome: "partial",
+          title: "Breach Contained — With Damage",
+          summary: [
+            "⚠️ Some data was accessed but not fully exfiltrated",
+            "🔧 Systems restored from backup — 18 hours of data lost",
+            "📋 Incident report filed with regulators",
+            "✅ Attacker evicted from network within 4 hours"
+          ],
+          lesson: "You contained the breach but some decisions slowed the response. Faster action earlier would have prevented all damage.",
+          xp: 40
+        },
+        end_good: {
+          terminal: true, outcome: "good",
+          title: "Incident Resolved — Zero Data Loss",
+          summary: [
+            "✅ Phishing attempt identified and blocked within minutes",
+            "✅ No credentials compromised",
+            "✅ Attacker evicted before any data was accessed",
+            "✅ Full incident report filed — passed regulatory audit",
+            "✅ Team awareness briefing completed"
+          ],
+          lesson: "Textbook incident response. Verify before you act, isolate fast, document everything.",
+          xp: 75
+        }
+      };
+
+      // ── STATE ──────────────────────────────────────────────────
+      let damage = 0;
+      let stepHistory = [];
+      let totalSteps = 5;
+
+      function setDamage(d) {
+        damage = Math.min(100, damage + d);
+        document.getElementById("damageFill").style.width = damage + "%";
+        document.getElementById("damageLabel").innerText = damage + "%";
+      }
+
+      function updateDots() {
+        const container = document.getElementById("progressDots");
+        container.innerHTML = "";
+        for (let i = 0; i < totalSteps; i++) {
+          const dot = document.createElement("div");
+          dot.className = "ir-step-dot";
+          if (i < stepHistory.length) {
+            dot.classList.add(stepHistory[i] ? "done" : "bad");
+          } else if (i === stepHistory.length) {
+            dot.classList.add("current");
+          }
+          container.appendChild(dot);
+        }
+      }
+
+      function renderScene(nodeId) {
+        const node = scenarios[nodeId];
+        if (!node) return;
+        const area = document.getElementById("missionArea");
+
+        if (node.terminal) {
+          renderEndScreen(node);
+          return;
+        }
+
+        updateDots();
+
+        area.innerHTML = `
+          <div class="ir-scene">
+            <span class="scenario-tag">${node.tag}</span>
+            <h3>${node.title}</h3>
+            <p>${node.body}</p>
+            <div class="ir-choices" id="choiceArea"></div>
+          </div>`;
+
+        const choiceArea = document.getElementById("choiceArea");
+        node.choices.forEach((choice, i) => {
+          const btn = document.createElement("button");
+          btn.className = "ir-choice";
+          btn.innerText = choice.text;
+          btn.onclick = () => handleChoice(choice, nodeId);
+          choiceArea.appendChild(btn);
+        });
+      }
+
+      function handleChoice(choice, fromNode) {
+        setDamage(choice.damage || 0);
+        stepHistory.push(!!choice.good);
+        updateDots();
+
+        const area = document.getElementById("missionArea");
+        const scene = area.querySelector(".ir-scene");
+
+        // Disable all buttons
+        scene.querySelectorAll(".ir-choice").forEach(b => b.disabled = true);
+
+        // Show consequence
+        const conseq = document.createElement("div");
+        conseq.className = choice.good ? "consequence-good" : "consequence-bad";
+        conseq.innerHTML = `<strong>${choice.good ? "✅ Good call:" : "⚠️ Consequence:"}</strong> ${choice.consequence}`;
+        scene.appendChild(conseq);
+
+        // Proceed after delay
+        setTimeout(() => renderScene(choice.next), 2200);
+      }
+
+      async function renderEndScreen(node) {
+        updateDots();
+        const area = document.getElementById("missionArea");
+        const isGood = node.outcome === "good";
+        const isPartial = node.outcome === "partial";
+
+        area.innerHTML = `
+          <div class="${isGood ? 'success-screen' : 'damage-screen'}">
+            <h2>${isGood ? "🛡️" : isPartial ? "⚠️" : "💀"} ${node.title}</h2>
+            <p style="color:#888;font-size:13px;margin-bottom:16px;">Final Breach Damage: <strong style="color:#ff003c;">${damage}%</strong></p>
+            <ul class="damage-list">
+              ${node.summary.map(s => `<li>${s}</li>`).join("")}
+            </ul>
+            <div style="background:rgba(0,243,255,0.05);border-left:3px solid var(--neon-cyan);padding:14px;margin:20px 0;text-align:left;font-size:13px;color:#c0c8d0;">
+              <strong style="color:var(--neon-cyan);">📖 Lesson:</strong> ${node.lesson}
+            </div>
+            <p style="color:var(--neon-cyan);font-size:14px;">+${node.xp} XP earned</p>
+            <div style="display:flex;gap:12px;justify-content:center;margin-top:20px;flex-wrap:wrap;">
+              <button class="primary-btn" onclick="startSimulator()" style="clip-path:none;">🔄 Try Again</button>
+              <button class="secondary-btn" onclick="goHome()" style="clip-path:none;">← Back to Hub</button>
+            </div>
+          </div>`;
+
+        // Safety protocols
+        const protocolDiv = document.createElement("div");
+        protocolDiv.id = "safetyArea";
+        area.appendChild(protocolDiv);
+        showSafetySteps("incident", "safetyArea");
+
+        try {
+          await updateXP(node.xp, "incident");
+        } catch(e) { console.error(e); }
+      }
+
+      window.startSimulator = function() {
+        damage = 0;
+        stepHistory = [];
+        document.getElementById("damageFill").style.width = "0%";
+        document.getElementById("damageLabel").innerText = "0%";
+        renderScene("s1");
+        updateDots();
+      };
+
+      startSimulator();
+    </script>
+    <script src="js/common.js"></script>
+  </body>
+</html>

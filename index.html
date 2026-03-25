@@ -101,17 +101,23 @@
           <button onclick="startMission('darkweb')" class="new-mission">
             🌐 Dark Web Market
           </button>
+          <button onclick="startMission('incident')" class="new-mission">
+            🚨 Incident Response
+          </button>
         </div>
       </div>
 
       <div class="mission-section" id="tour-tools">
-        <h3 class="section-title">🛠️ Tools & Knowledge</h3>
+        <h3 class="section-title">&#x1F6E0;&#xFE0F; Tools &amp; Knowledge</h3>
         <div class="missions">
+          <button onclick="startMission('daily')" class="new-mission" style="border-color:var(--neon-magenta);color:var(--neon-magenta);">
+            &#x26A1; Daily Challenge
+          </button>
           <button onclick="startMission('creator')" class="new-mission">
-            🧪 Mission Creator
+            &#x1F9EA; Mission Creator
           </button>
           <button onclick="startMission('wiki')" class="secondary-btn">
-            📖 Cyber-Wiki
+            &#x1F4D6; Cyber-Wiki
           </button>
         </div>
       </div>
@@ -175,6 +181,7 @@
       import { getUserData } from "./js/xp.js";
       import { collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
       import { initTour } from "./js/tour.js";
+      import { applyLockStates, getNewlyUnlocked, showUnlockToast, UNLOCKS, getUnlockXP } from "./js/unlocks.js";
 
       async function loadLeaderboard() {
         try {
@@ -254,6 +261,18 @@
               document.getElementById("rankLabel").innerText = `Rank: ${rank}`;
               document.getElementById("userXPFill").style.width = `${Math.min(progress, 100)}%`;
 
+              // Apply lock/unlock states to mission buttons
+              applyLockStates(xp);
+
+              // Show unlock toasts for anything newly unlocked this session
+              const prevXP = parseInt(sessionStorage.getItem('prevXP') || '0');
+              if (prevXP < xp) {
+                getNewlyUnlocked(prevXP, xp).forEach((u, i) => {
+                  setTimeout(() => showUnlockToast(u), i * 1000);
+                });
+              }
+              sessionStorage.setItem('prevXP', xp);
+
               // Show profile data, hide skeleton
               document.getElementById("profileSkeleton").style.display = "none";
               document.getElementById("profileData").style.display = "block";
@@ -269,6 +288,7 @@
                 { id: 'malware', name: '🧩 Malware Escape' },
                 { id: 'password', name: '🛡️ Password Lab' },
                 { id: 'darkweb', name: '🌐 Dark Web Market' },
+                { id: 'incident', name: '🚨 Incident Response' },
                 { id: 'creator', name: '🧪 Mission Creator' },
                 { id: 'wiki', name: '📖 Cyber-Wiki' }
               ];
@@ -279,6 +299,25 @@
                 return `<div>${completed ? '✅' : '⬜'} ${m.name}</div>`;
               }).join('');
               document.getElementById('missionTracker').style.display = 'block';
+
+              // Unlocks Panel
+              const unlockPanel = document.createElement('div');
+              unlockPanel.className = 'unlocks-panel';
+              unlockPanel.innerHTML = `<h4 style="font-size:12px;color:var(--neon-cyan);margin-bottom:8px;">🔓 Unlocks</h4>` +
+                UNLOCKS.filter(u => u.type === 'mission' || u.type === 'feature').map(u => {
+                  const done = xp >= u.xpRequired;
+                  const pct = Math.min(100, Math.round((xp / u.xpRequired) * 100));
+                  return `<div class="unlock-row">
+                    <span class="unlock-icon">${done ? '✅' : '🔒'}</span>
+                    <span class="unlock-label">${u.label}</span>
+                    ${done
+                      ? `<span class="unlock-status-done">Unlocked</span>`
+                      : `<div class="unlock-bar"><div class="unlock-bar-fill" style="width:${pct}%"></div></div>
+                         <span class="unlock-status-locked">${u.xpRequired} XP</span>`
+                    }
+                  </div>`;
+                }).join('');
+              document.getElementById('profileData').appendChild(unlockPanel);
 
               // Achievements Display
               const badgeList = document.getElementById("badgeList");

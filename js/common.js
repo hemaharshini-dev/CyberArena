@@ -257,6 +257,8 @@ const PAGE_NAMES = {
     'malware': 'Malware Escape',
     'password': 'Password Lab',
     'darkweb': 'Dark Web Market',
+    'daily': 'Daily Challenge',
+    'incident': 'Incident Response',
     'creator': 'Mission Creator',
     'wiki': 'Cyber-Wiki',
     'login': 'Login',

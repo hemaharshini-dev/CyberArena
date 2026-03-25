@@ -36,6 +36,12 @@ const safetyProtocols = {
         "✅ Protocol 1: Never click links in unsolicited SMS messages — go directly to the official app or website.",
         "✅ Protocol 2: Forward suspected smishing messages to 7726 (SPAM) to report to your carrier.",
         "✅ Protocol 3: Use a QR scanner that previews the destination URL before opening it."
+    ],
+    incident: [
+        "✅ Protocol 1: Verify every unexpected request through a second, independent channel before acting — regardless of who it appears to be from.",
+        "✅ Protocol 2: Isolate first, investigate second — disconnect an infected machine from the network immediately to stop lateral spread.",
+        "✅ Protocol 3: Document everything during an incident — timeline, affected systems, data accessed, and actions taken. Regulators require it.",
+        "✅ Protocol 4: Never pay a ransom — it funds further attacks and recovery is not guaranteed. Restore from backups instead."
     ]
 };
 
