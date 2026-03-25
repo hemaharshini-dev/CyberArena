@@ -1,36 +1,20 @@
 import { auth } from "./firebase.js";
+import { signOut, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-import { signOut, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-async function login() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-  try {
-    await signInWithEmailAndPassword(auth, email, password);
-    window.location.href = "index.html";
-  } catch (err) {
-    alert(err.message);
-  }
-}
-
-async function register() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-  try {
-    await createUserWithEmailAndPassword(auth, email, password);
-    window.location.href = "index.html";
-  } catch (err) {
-    alert(err.message);
-  }
+function showError(msg) {
+  const el = document.getElementById("auth-error");
+  if (el) el.textContent = msg;
 }
 
 async function googleLogin() {
-  const provider = new GoogleAuthProvider();
+  const btn = document.getElementById("googleBtn");
+  if (btn) btn.disabled = true;
   try {
-    await signInWithPopup(auth, provider);
+    await signInWithPopup(auth, new GoogleAuthProvider());
     window.location.href = "index.html";
   } catch (err) {
-    alert(err.message);
+    showError(err.code === "auth/popup-closed-by-user" ? "Sign-in cancelled." : "Google sign-in failed. Please try again.");
+    if (btn) btn.disabled = false;
   }
 }
 
@@ -39,17 +23,18 @@ window.logout = async function () {
     await signOut(auth);
     window.location.href = "login.html";
   } catch (err) {
-    alert(err.message);
+    console.error(err);
   }
 };
 
-// Wire up login page buttons if present
-document.getElementById("loginBtn")?.addEventListener("click", login);
-document.getElementById("registerBtn")?.addEventListener("click", register);
 document.getElementById("googleBtn")?.addEventListener("click", googleLogin);
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
+    if (window.location.pathname.endsWith("login.html")) {
+      window.location.href = "index.html";
+      return;
+    }
     const el = document.getElementById("userEmail");
     if (el) el.innerText = user.email;
   }
