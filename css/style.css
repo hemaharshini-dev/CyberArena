@@ -871,3 +871,17 @@ html.font-lg { font-size: 20px; }
   padding: 2px 0;
   transition: color 0.2s;
 }
+
+/* Fixed bars — mobile stacking */
+@media (max-width: 600px) {
+  #fontControlBar {
+    top: auto;
+    bottom: 55px;
+    right: 15px;
+  }
+
+  #audioControlBar {
+    bottom: 15px;
+    right: 15px;
+  }
+}

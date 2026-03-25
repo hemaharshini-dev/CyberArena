@@ -356,7 +356,10 @@
           navigator.share({ title: 'CyberArena Score', text });
         } else {
           navigator.clipboard.writeText(text).then(() => {
-            alert('📋 Score copied to clipboard! Paste it anywhere to share.');
+            const btn = document.getElementById('shareScoreBtn');
+            const orig = btn.innerText;
+            btn.innerText = '✅ Copied!';
+            setTimeout(() => btn.innerText = orig, 2000);
           });
         }
       }
