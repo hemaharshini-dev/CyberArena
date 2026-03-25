@@ -68,6 +68,7 @@ body {
   width: 95%;
   max-width: 900px;
   padding: 40px;
+  padding-bottom: 80px;
   border: 2px solid var(--neon-cyan);
   border-radius: 5px;
   box-shadow: 

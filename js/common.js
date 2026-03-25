@@ -160,7 +160,7 @@ function injectAudioControls() {
     bar.id = 'audioControlBar';
     bar.setAttribute('role', 'toolbar');
     bar.setAttribute('aria-label', 'Audio and display controls');
-    bar.style.cssText = 'position:fixed;bottom:15px;right:15px;z-index:9999;display:flex;align-items:center;gap:8px;background:rgba(0,0,0,0.8);border:1px solid var(--neon-cyan);padding:6px 12px;border-radius:4px;font-size:12px;';
+    bar.style.cssText = 'position:fixed;bottom:15px;right:15px;z-index:9999;display:flex;align-items:center;gap:6px;background:rgba(0,0,0,0.92);border:1px solid var(--neon-cyan);padding:5px 10px;border-radius:4px;font-size:12px;max-width:calc(100vw - 30px);flex-wrap:wrap;';
     bar.innerHTML = `
         <button id="musicBtn" onclick="toggleMusic()" title="Music: ${musicOn ? 'ON' : 'OFF'}" aria-label="Toggle ambient music"
             style="padding:3px 8px;font-size:10px;clip-path:none;color:${musicOn ? 'var(--neon-cyan)' : '#444'};">🎵</button>
@@ -170,9 +170,9 @@ function injectAudioControls() {
             style="width:70px;accent-color:var(--neon-cyan);cursor:pointer;" title="Volume" aria-label="Volume control" />
         <button id="muteBtn" onclick="toggleMute()" style="padding:3px 8px;font-size:10px;clip-path:none;" aria-label="Toggle mute">${globalMuted ? '🔇' : '🔈'}</button>
         <span style="color:#333;">|</span>
-        <button onclick="setFontSize('font-sm')" style="padding:3px 6px;font-size:9px;clip-path:none;" title="Small text" aria-label="Small font size">A</button>
-        <button onclick="setFontSize('font-md')" style="padding:3px 6px;font-size:11px;clip-path:none;" title="Medium text" aria-label="Medium font size">A</button>
-        <button onclick="setFontSize('font-lg')" style="padding:3px 6px;font-size:14px;clip-path:none;" title="Large text" aria-label="Large font size">A</button>
+        <button id="fsBtn-sm" onclick="setFontSize('font-sm')" style="padding:3px 6px;font-size:9px;clip-path:none;" title="Small text" aria-label="Small font size">A</button>
+        <button id="fsBtn-md" onclick="setFontSize('font-md')" style="padding:3px 6px;font-size:11px;clip-path:none;" title="Medium text" aria-label="Medium font size">A</button>
+        <button id="fsBtn-lg" onclick="setFontSize('font-lg')" style="padding:3px 6px;font-size:14px;clip-path:none;" title="Large text" aria-label="Large font size">A</button>
     `;
     document.body.appendChild(bar);
 
@@ -188,6 +188,17 @@ function injectAudioControls() {
     };
 
     if (musicOn) startAmbientMusic();
+    highlightFontBtn(savedFont);
+}
+
+function highlightFontBtn(cls) {
+    ['font-sm', 'font-md', 'font-lg'].forEach(c => {
+        const btn = document.getElementById('fsBtn-' + c.replace('font-', ''));
+        if (!btn) return;
+        btn.style.color = c === cls ? 'var(--neon-cyan)' : '#555';
+        btn.style.borderColor = c === cls ? 'var(--neon-cyan)' : '#333';
+        btn.style.background = c === cls ? 'rgba(0,243,255,0.1)' : 'transparent';
+    });
 }
 
 window.toggleMute = function() {
@@ -207,6 +218,7 @@ window.setFontSize = function(cls) {
     document.documentElement.className = document.documentElement.className
         .replace(/font-(sm|md|lg)/g, '').trim() + ' ' + cls;
     localStorage.setItem('fontSize', cls);
+    highlightFontBtn(cls);
 };
 
 document.addEventListener('DOMContentLoaded', injectAudioControls);
