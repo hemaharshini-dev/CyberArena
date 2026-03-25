@@ -10,6 +10,8 @@ window.toggleHighContrast = function() {
     document.body.parentElement.classList.toggle('high-contrast');
     const isHighContrast = document.body.parentElement.classList.contains('high-contrast');
     localStorage.setItem('high-contrast', isHighContrast);
+    const savedFont = localStorage.getItem('fontSize') || 'font-md';
+    highlightFontBtn(savedFont);
 };
 
 // Apply preference on load
@@ -203,12 +205,22 @@ function injectAudioControls() {
 }
 
 function highlightFontBtn(cls) {
+    const isHC = document.documentElement.classList.contains('high-contrast') ||
+                 document.body.parentElement.classList.contains('high-contrast');
     ['font-sm', 'font-md', 'font-lg'].forEach(c => {
         const btn = document.getElementById('fsBtn-' + c.replace('font-', ''));
         if (!btn) return;
-        btn.style.color = c === cls ? 'var(--neon-cyan)' : '#555';
-        btn.style.borderColor = c === cls ? 'var(--neon-cyan)' : '#333';
-        btn.style.background = c === cls ? 'rgba(0,243,255,0.1)' : 'transparent';
+        const active = c === cls;
+        if (isHC) {
+            btn.style.setProperty('background', active ? '#fff' : '#000', 'important');
+            btn.style.setProperty('color', active ? '#000' : '#fff', 'important');
+            btn.style.setProperty('border-color', '#000', 'important');
+            btn.style.setProperty('outline', active ? '2px solid #000' : 'none', 'important');
+        } else {
+            btn.style.color = active ? 'var(--neon-cyan)' : '#555';
+            btn.style.borderColor = active ? 'var(--neon-cyan)' : '#333';
+            btn.style.background = active ? 'rgba(0,243,255,0.1)' : 'transparent';
+        }
     });
 }
 

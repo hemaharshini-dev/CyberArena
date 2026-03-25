@@ -505,6 +505,7 @@ input:focus {
 }
 
 .high-contrast #progressFill,
+.high-contrast #userXPFill,
 .high-contrast #healthBar,
 .high-contrast #trustBar,
 .high-contrast #strengthFill {
