@@ -197,7 +197,7 @@ button:hover {
   transition: width 0.3s ease-in-out;
 }
 
-#progressFill { background: var(--neon-cyan); box-shadow: 0 0 10px var(--neon-cyan); }
+#progressFill, #userXPFill { background: var(--neon-cyan); box-shadow: 0 0 10px var(--neon-cyan); }
 #healthBar { background: #ff003c; box-shadow: 0 0 10px #ff003c; }
 #trustBar { background: var(--neon-green); box-shadow: 0 0 10px var(--neon-green); }
 #strengthFill { background: #ff003c; transition: all 0.5s; }
