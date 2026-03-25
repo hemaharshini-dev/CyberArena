@@ -31,6 +31,7 @@ Missions are grouped into three categories on the Hub:
 *   **Clue Investigation:** Select up to 2 anomalies (Tone, Language, Context, Identity) before rendering a verdict.
 *   **Flag or Trust:** Decide if the content is AI-generated or legitimate.
 *   **Deep Dive:** Real-world case study on the 2024 $25M deepfake CFO fraud shown on correct answer.
+*   **XP Lock:** Requires 75 XP to unlock.
 
 #### 4. 🧩 Malware Escape
 *   **Incident Response:** Manage "System Health" during an active ransomware outbreak.
@@ -50,20 +51,38 @@ Missions are grouped into three categories on the Hub:
 *   **Breach Database Search:** Query simulated corporate leaks by domain (e.g., `corp.com`, `secure.net`).
 *   **Risk Assessment:** Evaluate the severity of leaked data (Plaintext vs. SHA-256 Hashed) to determine threat level and earn XP.
 *   **Completion Screen:** Deep Dive (Adobe 2013 breach, Collection #1 2019) and safety protocols shown at mission end.
+*   **XP Lock:** Requires 50 XP to unlock.
+
+#### 7. 🚨 Incident Response Simulator *(New)*
+*   **Branching Scenario Tree:** Navigate a realistic multi-step corporate breach — from a phishing email through credential theft, ransomware deployment, and regulatory reporting.
+*   **Consequence Engine:** Every decision has an immediate consequence shown before the next scene loads. Wrong calls add to the Breach Damage meter.
+*   **Breach Damage Meter:** A 0–100% damage bar tracks cumulative harm from poor decisions across the scenario.
+*   **Progress Dots:** Visual step tracker shows good (green), bad (red), and current (cyan) decisions.
+*   **Three Outcomes:** Full Breach (💀), Breach Contained with Damage (⚠️), or Zero Data Loss (🛡️) — each with a detailed summary and lesson.
+*   **Safety Protocols:** 4 actionable incident response protocols shown at mission end.
+*   **XP Lock:** Requires 100 XP to unlock.
 
 ### 🛠️ Tools & Knowledge
-#### 7. 📱 Smishing Simulator
+#### 8. ⚡ Daily Challenge *(New)*
+*   **One Question Per Day:** A single scenario-based question drawn from a 12-question pool (Phishing, Social Engineering, Password, Malware, Smishing, MFA, Dark Web, Quishing) — seeded deterministically so every player gets the same question each day.
+*   **30-Second Timer:** Faster correct answers earn more XP (up to 30 XP; wrong answers earn 5 XP).
+*   **Daily Leaderboard:** Top-10 scores for the current day stored in Firestore under `dailyScores/{dateKey}/players`.
+*   **Already-Played State:** Shows a live countdown to the next challenge if you've already completed today's question.
+*   **Explanation Panel:** After answering, the correct answer and a detailed explanation are revealed.
+
+#### 9. 📱 Smishing Simulator
 *   **Mobile Interface:** Identify malicious SMS messages within a realistic phone frame.
 *   **Drag-and-Drop:** Drag SMS bubbles into "Scam" or "Safe" bins, or use the on-screen buttons.
 *   **Quishing (QR Phishing):** Some messages contain mock QR codes — tap to reveal the hidden malicious URL before deciding.
 *   **Completion Screen:** Score summary, grade, Deep Dive (FluBot 2021, USPS scam wave) and safety protocols shown at mission end.
 
-#### 8. 🧪 Mission Creator
+#### 10. 🧪 Mission Creator
 *   **Custom Scenario Builder:** Fill in Sender, Subject, Body, and Link fields with a live email preview pane.
 *   **Educational Breakdown:** After generating JSON, a "Why This Scenario Works" panel analyses your inputs and explains the red flags (spoofed sender, urgency language, suspicious TLDs).
 *   **JSON Export:** Generate and copy a structured JSON payload to share custom phishing scenarios with others.
+*   **XP Lock:** Requires 150 XP to unlock.
 
-#### 9. 📖 Cyber-Wiki
+#### 11. 📖 Cyber-Wiki
 *   **Knowledge Base:** Reference articles on Phishing, Smishing, Quishing, Ransomware, Social Engineering, MFA, and Cryptography — each in a consistent 4-part structure: Definition → Common Tactics/Key Concepts → How to Stay Safe → Real-World Cases.
 *   **Interactive Tooltips:** Hover over key terms (e.g., SHA-256, Entropy, Pretexting) for inline definitions.
 *   **Quick Navigation:** Jump-links to each section at the top of the page.
@@ -73,7 +92,7 @@ Missions are grouped into three categories on the Hub:
 ## 🛠️ Tech Stack
 
 *   **Frontend:** HTML5, CSS3 (Retro-Cyberpunk aesthetic with CRT effects, scanlines, and neon animations). Fully responsive with mobile media queries (`<600px`, `601–900px`).
-*   **Database & Auth:** **Firebase** (Firestore for XP/Leaderboard and Firebase Auth for Email/Password + Google Sign-In).
+*   **Database & Auth:** **Firebase** (Firestore for XP/Leaderboard/Daily Scores and Firebase Auth for Email/Password + Google Sign-In).
 *   **Audio Engine:** **Web Audio API** for an immersive soundscape — procedurally generated success, error, and click sounds, plus a full ambient cyberpunk music engine with bass drone, mid pad, and rhythmic pulse.
 *   **Logic:** Modular ES6+ JavaScript.
 *   **AI Integration:** OpenRouter API (Mistral-7B) for live phishing scenario generation with a local fallback engine.
@@ -89,11 +108,20 @@ Missions are grouped into three categories on the Hub:
 | **Rank System** | Novice (0 XP) → Specialist (100 XP) → Elite Guardian (500 XP), with a progress bar. |
 | **Adaptive Difficulty** | Timer and scenario complexity scale with XP rank. Novice: 10s timer. Specialist: 7s + extra social engineering steps. Elite: 5s + extra steps. |
 | **Achievements / Badges** | Unlock badges: 🔰 Rookie (0 XP), 🔍 Detective (50 XP), 🛡️ Shield (200 XP), 👑 Elite (500 XP). |
+| **Mission Locks** | Dark Web (50 XP), AI Crime Lab (75 XP), Incident Response (100 XP), Mission Creator (150 XP). Locked missions show a 🔒 overlay with the required XP. |
+| **Unlock Toasts** | When you earn enough XP to unlock a mission or feature, an animated toast notification appears. |
+| **Hard Mode** | Unlocked at 300 XP — all missions run at Elite difficulty. |
+| **Mission Completion Tracker** | Profile panel shows ✅/⬜ status for all 10 missions. |
+| **Unlocks Panel** | Progress bars in the profile show how close you are to each locked mission/feature. |
+| **Daily Challenge** | One question per day from a 12-scenario pool. Faster answers earn more XP. Daily leaderboard resets at midnight. |
 | **System Health** | Visual health bar during Malware Escape; triggers glitch effects at low health. |
 | **Trust Level** | Real-time gauge of psychological manipulation in Social Engineering. |
-| **Safety Protocols** | Actionable, real-world security tips shown at mission end for all 7 mission categories. |
+| **Breach Damage Meter** | Tracks cumulative damage from poor decisions in Incident Response. |
+| **Safety Protocols** | Actionable, real-world security tips shown at mission end for all mission categories. |
 | **Deep Dives** | Real-world case studies shown on mission completion screens (Phishing, Social, AI, Malware, Password, Dark Web, Smishing). |
 | **Onboarding Tour** | 7-step guided tour on first login with spotlight overlay, progress dots, and skip/back/next controls. Replay anytime via the 🧭 Tour button. |
+| **How to Play Guide** | Modal shown on first login with mission overview, key features, and pro tips. Accessible anytime via the 🎮 Guide button. |
+| **Share Score** | Share your rank, XP, and missions completed via the Web Share API or clipboard copy. |
 | **Activity Ticker** | Live scrolling feed on the Hub simulating global community activity. |
 | **High Contrast Mode** | Accessibility toggle persisted via `localStorage`. |
 | **Font Size Controls** | A/A/A buttons in the audio bar to switch between small, medium, and large text. Persisted via `localStorage`. |
@@ -116,6 +144,8 @@ CyberArena/
 ├── password.html       # Password Strength, Entropy & MFA Lab
 ├── darkweb.html        # Breach Search & Risk Assessment Simulator
 ├── smishing.html       # Mobile SMS & QR (Quishing) Simulator
+├── incident.html       # Incident Response Simulator (branching scenario tree)
+├── daily.html          # Daily Challenge (one question/day + daily leaderboard)
 ├── creator.html        # Custom Phishing Mission Builder
 ├── wiki.html           # Cyber-Wiki Knowledge Base
 ├── css/
@@ -128,6 +158,9 @@ CyberArena/
     ├── audio.js        # Standalone Audio Module (ES6 export)
     ├── adaptive.js     # Adaptive Difficulty Engine — timerSeconds, extraSteps, safetyProtocols
     ├── tour.js         # 7-step Onboarding Tour — spotlight overlay, dots, localStorage persistence
+    ├── unlocks.js      # Mission/Feature Lock System — XP thresholds, lock overlays, unlock toasts
+    ├── guard.js        # Mission Guard — redirects or blocks page if XP threshold not met
+    ├── daily.js        # Daily Challenge Engine — seeded pool, Firestore score submission, leaderboard
     ├── phishing.js     # Phishing Detective Logic + AI Scenario Engine
     ├── social.js       # Social Engineering Chat Flow + adaptive hard steps
     ├── ai.js           # AI Crime Lab Logic
@@ -166,6 +199,7 @@ CyberArena/
 | Key | Purpose |
 | :--- | :--- |
 | `cyberarena_tour_done` | Prevents onboarding tour from re-running after first completion |
+| `cyberarena_guide_seen` | Prevents "How to Play" modal from re-showing after first view |
 | `high-contrast` | High contrast mode toggle state |
 | `muted` | Audio mute state |
 | `volume` | Master volume level (0–1) |
