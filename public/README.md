@@ -1,5 +1,7 @@
 # 🛡️ CyberArena: The Ultimate Cybersecurity Training Ground
 
+🌐 **Live Demo:** [https://cyberarena-77a96.web.app](https://cyberarena-77a96.web.app)
+
 **CyberArena** is an immersive, gamified web-based platform designed to transform users from digital novices into "Elite Guardians." Through high-stakes simulations, neon-drenched missions, and real-time threat detection, users learn to defend against the most sophisticated cyber attacks of the modern age.
 
 ---
@@ -135,8 +137,8 @@ Missions are grouped into three categories on the Hub:
 
 ```text
 CyberArena/
-├── index.html          # Mission Hub, User Profile, Achievements & Global Leaderboard
-├── login.html          # Firebase Auth Portal (Email/Password + Google)
+├── hub.html            # Mission Hub, User Profile, Achievements & Global Leaderboard
+├── index.html          # Firebase Auth Portal (Email/Password + Google)
 ├── phishing.html       # Phishing Detective Mission
 ├── social.html         # Social Engineering Simulator
 ├── ai.html             # AI Crime Lab (Deepfake Detection)
@@ -183,6 +185,7 @@ CyberArena/
     *   The project is pre-configured with a demo Firebase project (`cyberarena-77a96`). To use your own, update `js/firebase.js` with your project credentials.
 3.  **Run Locally**
     *   Open `index.html` in any modern web browser. A local server (e.g., VS Code Live Server) is recommended for Firebase ES modules to load correctly.
+4.  **Or visit the live hosted version directly at [https://cyberarena-77a96.web.app](https://cyberarena-77a96.web.app)**
 4.  **(Optional) Enable Live AI Scenarios**
     *   Get a free API key from [OpenRouter](https://openrouter.ai).
     *   Open the Phishing Detective mission in your browser, press **F12** to open DevTools, and click the **Console** tab.
