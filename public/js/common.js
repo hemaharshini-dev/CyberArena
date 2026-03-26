@@ -3,7 +3,7 @@ function startMission(type) {
 }
 
 function goHome() {
-  window.location.href = "index.html";
+  window.location.href = "hub.html";
 }
 
 window.toggleHighContrast = function() {
@@ -262,7 +262,8 @@ const PAGE_NAMES = {
     'creator': 'Mission Creator',
     'wiki': 'Cyber-Wiki',
     'login': 'Login',
-    'index': 'Hub'
+    'index': 'Hub',
+    'hub': 'Hub'
 };
 
 function injectBreadcrumb() {
@@ -270,13 +271,13 @@ function injectBreadcrumb() {
     if (existing) return; // wiki.html already has one
 
     const path = window.location.pathname.split('/').pop().replace('.html', '') || 'index';
-    if (path === 'index' || path === 'login' || path === '') return;
+    if (path === 'hub' || path === 'index' || path === 'login' || path === '') return;
 
     const pageName = PAGE_NAMES[path] || path;
     const crumb = document.createElement('div');
     crumb.id = 'breadcrumb';
     crumb.style.cssText = 'font-size:11px;color:#666;margin-bottom:10px;text-align:left;';
-    crumb.innerHTML = `<a href="index.html" style="color:#666;text-decoration:none;" onmouseover="this.style.color='var(--neon-cyan)'" onmouseout="this.style.color='#666'">Hub</a> <span style="color:#444;">›</span> <span style="color:var(--neon-cyan);">${pageName}</span>`;
+    crumb.innerHTML = `<a href="hub.html" style="color:#666;text-decoration:none;" onmouseover="this.style.color='var(--neon-cyan)'" onmouseout="this.style.color='#666'">Hub</a> <span style="color:#444;">›</span> <span style="color:var(--neon-cyan);">${pageName}</span>`;
 
     const container = document.querySelector('.container');
     if (container) {
