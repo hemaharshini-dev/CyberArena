@@ -8,7 +8,6 @@
     <style>
       .phone-frame {
         width: 300px;
-        height: 500px;
         border: 12px solid #30363d;
         border-radius: 30px;
         margin: 0 auto;
@@ -18,9 +17,9 @@
       }
       .phone-screen {
         padding: 20px;
-        height: 100%;
         display: flex;
         flex-direction: column;
+        gap: 8px;
       }
       .sms-bubble {
         background: #1f2937;
@@ -108,33 +107,41 @@
   <body>
     <div class="container">
       <button class="back-btn" onclick="goHome()">← Back</button>
-      <h2>📱 Smishing Simulator</h2>
-      <p>Drag the SMS into the correct bin, or use the buttons below.</p>
+      <h2 id="pageTitle" style="margin:0 0 4px;">📱 Smishing Simulator</h2>
+      <p id="gameSubtitle" style="margin:0 0 12px;font-size:13px;">Drag the SMS into the correct bin, or use the buttons on the right.</p>
 
-      <div class="phone-frame">
-        <div class="phone-screen" id="phoneScreen">
-          <!-- Messages will load here -->
+      <div id="gameArea" style="display:flex;gap:30px;align-items:flex-start;justify-content:center;flex-wrap:wrap;">
+
+        <!-- Left: Phone -->
+        <div class="phone-frame">
+          <div class="phone-screen" id="phoneScreen">
+            <!-- Messages will load here -->
+          </div>
         </div>
+
+        <!-- Right: Bins + Feedback -->
+        <div id="binsPanel" style="display:flex;flex-direction:column;gap:16px;justify-content:center;min-width:200px;flex:1;max-width:320px;">
+          <div class="drop-bin scam-bin" id="scamBin"
+            role="button" aria-label="Drop here to flag as scam"
+            ondragover="event.preventDefault(); this.classList.add('drag-over');"
+            ondragleave="this.classList.remove('drag-over');"
+            ondrop="handleDrop(true); this.classList.remove('drag-over');">
+            🚨 Scam
+          </div>
+          <div class="drop-bin safe-bin" id="safeBin"
+            role="button" aria-label="Drop here to mark as safe"
+            ondragover="event.preventDefault(); this.classList.add('drag-over');"
+            ondragleave="this.classList.remove('drag-over');"
+            ondrop="handleDrop(false); this.classList.remove('drag-over');">
+            ✅ Safe
+          </div>
+          <div id="feedback" style="min-height:44px;" aria-live="polite"></div>
+        </div>
+
       </div>
 
-      <div class="drop-bins">
-        <div class="drop-bin scam-bin" id="scamBin"
-          role="button" aria-label="Drop here to flag as scam"
-          ondragover="event.preventDefault(); this.classList.add('drag-over');"
-          ondragleave="this.classList.remove('drag-over');"
-          ondrop="handleDrop(true); this.classList.remove('drag-over');">
-          🚨 Scam
-        </div>
-        <div class="drop-bin safe-bin" id="safeBin"
-          role="button" aria-label="Drop here to mark as safe"
-          ondragover="event.preventDefault(); this.classList.add('drag-over');"
-          ondragleave="this.classList.remove('drag-over');"
-          ondrop="handleDrop(false); this.classList.remove('drag-over');">
-          ✅ Safe
-        </div>
-      </div>
-      
-      <div id="feedback" style="margin-top:20px;" aria-live="polite"></div>
+      <!-- Completion screen — outside the two-column layout -->
+      <div id="completionArea" style="display:none;"></div>
     </div>
 
     <script type="module">

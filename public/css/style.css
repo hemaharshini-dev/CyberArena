@@ -932,3 +932,123 @@ button:disabled .lock-overlay {
 
 .high-contrast .unlock-row .unlock-status-done { color: #000 !important; }
 .high-contrast .unlock-row .unlock-bar-fill { background: #000 !important; }
+
+/* ============================================================
+   📱 MOBILE FIXES — font & audio bars + general layout
+============================================================ */
+@media (max-width: 600px) {
+  /* Font size control bar — full-width strip above audio bar */
+  #fontControlBar {
+    top: auto !important;
+    bottom: 56px !important;
+    right: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    border-radius: 0 !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-top: 1px solid var(--neon-cyan) !important;
+    border-bottom: none !important;
+    justify-content: center !important;
+    padding: 5px 12px !important;
+    gap: 12px !important;
+    box-sizing: border-box !important;
+  }
+
+  #fontControlBar button {
+    padding: 5px 14px !important;
+    font-size: 13px !important;
+    min-width: 38px !important;
+    min-height: 34px !important;
+    clip-path: none !important;
+  }
+
+  /* Audio control bar — full-width strip at very bottom */
+  #audioControlBar {
+    bottom: 0 !important;
+    right: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    border-radius: 0 !important;
+    border-left: none !important;
+    border-right: none !important;
+    justify-content: center !important;
+    padding: 5px 12px !important;
+    gap: 10px !important;
+    box-sizing: border-box !important;
+  }
+
+  #audioControlBar #volumeSlider {
+    width: 110px !important;
+    flex-shrink: 1 !important;
+  }
+
+  #audioControlBar button {
+    padding: 5px 10px !important;
+    font-size: 14px !important;
+    min-height: 34px !important;
+    clip-path: none !important;
+  }
+
+  /* Extra bottom padding so content isn't hidden behind the two bars */
+  .container {
+    padding-bottom: 130px !important;
+  }
+
+  /* Chat box — shorter on small screens */
+  .chat-box {
+    height: 260px;
+  }
+
+  /* Input group — stack on mobile */
+  .input-group {
+    flex-direction: column;
+  }
+
+  .input-group input {
+    border-right: 1px solid #333;
+    border-radius: 5px;
+    margin-bottom: 8px;
+  }
+
+  .input-group button {
+    border-radius: 5px;
+    width: 100%;
+  }
+
+  /* Log box — shorter */
+  .log-box {
+    height: 140px;
+    font-size: 11px;
+  }
+
+  /* Badge list — wrap on small screens */
+  .badge-list {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  /* Unlock row bar — wider on mobile */
+  .unlock-row .unlock-bar {
+    width: 60px;
+  }
+
+  /* Tour card — full width */
+  #tour-card {
+    width: calc(100vw - 30px) !important;
+    left: 15px !important;
+  }
+
+  /* Auth box */
+  .auth-box {
+    width: 95%;
+    padding: 25px 15px;
+  }
+
+  /* Tables — allow horizontal scroll */
+  table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}

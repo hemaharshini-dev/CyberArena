@@ -51,16 +51,16 @@ export async function getAdaptiveContent(category) {
     const xp = userData?.xp || 0;
 
     let difficulty = "Novice";
-    let timerSeconds = 10;
+    let timerSeconds = 30;
     let extraSteps = false;
 
     if (xp >= 500) {
         difficulty = "Elite Guardian";
-        timerSeconds = 5;
+        timerSeconds = 25;
         extraSteps = true;
     } else if (xp >= 100) {
         difficulty = "Specialist";
-        timerSeconds = 7;
+        timerSeconds = 27;
         extraSteps = true;
     }
 
