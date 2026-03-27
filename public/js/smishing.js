@@ -24,7 +24,7 @@ const messages = [
         link: "",
         isPhishing: false,
         qrCode: {
-            label: "library.cityportal.gov/card",
+            label: "https://library.cityportal.gov/card",
             warning: null
         }
     },

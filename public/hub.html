@@ -235,7 +235,8 @@
           window.location.href = "index.html";
         } else {
           try {
-            document.getElementById("userEmail").innerText = user.email;
+            const displayName = user.displayName || user.email.split('@')[0];
+            document.getElementById("userEmail").innerText = `Hi, ${displayName}!`;
             const userData = await getUserData();
             if (userData) {
               const xp = userData.xp || 0;
@@ -265,13 +266,13 @@
               applyLockStates(xp);
 
               // Show unlock toasts for anything newly unlocked this session
-              const prevXP = parseInt(sessionStorage.getItem('prevXP') || '0');
+              const prevXP = parseInt(localStorage.getItem('prevXP') || '0');
               if (prevXP < xp) {
                 getNewlyUnlocked(prevXP, xp).forEach((u, i) => {
                   setTimeout(() => showUnlockToast(u), i * 1000);
                 });
               }
-              sessionStorage.setItem('prevXP', xp);
+              localStorage.setItem('prevXP', xp);
 
               // Show profile data, hide skeleton
               document.getElementById("profileSkeleton").style.display = "none";

@@ -36,6 +36,6 @@ onAuthStateChanged(auth, (user) => {
       return;
     }
     const el = document.getElementById("userEmail");
-    if (el) el.innerText = user.email;
+    if (el) el.innerText = `Hi, ${user.displayName || user.email.split('@')[0]}!`;
   }
 });
