@@ -231,19 +231,27 @@ function syncMusicVolume() {
     }
 }
 
+window.changeTrack = function(val) {
+    currentTrack = val;
+    localStorage.setItem('musicTrack', currentTrack);
+    if (musicOn) startAmbientMusic();
+};
+
 window.toggleMusic = function() {
     musicOn = !musicOn;
     localStorage.setItem('musicOn', musicOn);
     const btn = document.getElementById('musicBtn');
     if (musicOn) {
-        btn.innerText = '🎵';
-        btn.title = 'Music: ON';
+        btn.innerText = '🎵 Music: ON';
         btn.style.color = 'var(--neon-cyan)';
+        btn.style.borderColor = 'var(--neon-cyan)';
+        btn.title = 'Music: ON';
         startAmbientMusic();
     } else {
-        btn.innerText = '🎵';
-        btn.title = 'Music: OFF';
+        btn.innerText = '🎵 Music: OFF';
         btn.style.color = '#444';
+        btn.style.borderColor = '#333';
+        btn.title = 'Music: OFF';
         stopAmbientMusic();
     }
 };
@@ -257,43 +265,67 @@ function injectAudioControls() {
     document.documentElement.className = document.documentElement.className
         .replace(/font-(sm|md|lg)/g, '').trim() + ' ' + savedFont;
 
-    // Music bar — bottom right
-    const bar = document.createElement('div');
-    bar.id = 'audioControlBar';
-    bar.setAttribute('role', 'toolbar');
-    bar.setAttribute('aria-label', 'Audio controls');
-    bar.style.cssText = 'position:fixed;bottom:15px;right:15px;z-index:9999;display:flex;flex-direction:column;align-items:stretch;gap:6px;background:rgba(0,0,0,0.92);border:1px solid var(--neon-cyan);padding:8px 10px;border-radius:4px;font-size:12px;';
-    bar.innerHTML = `
-        <select id="trackSelect" aria-label="Select music track"
-            style="background:#111;color:var(--neon-cyan);border:1px solid #333;font-size:10px;padding:3px 6px;cursor:pointer;font-family:var(--font-main);border-radius:3px;width:100%;">
-            <option value="cyberpunk" ${currentTrack==='cyberpunk'?'selected':''}>⚡ Cyberpunk</option>
-            <option value="dark"      ${currentTrack==='dark'     ?'selected':''}>🌑 Dark Ambient</option>
-        </select>
-        <div style="display:flex;align-items:center;gap:6px;">
+    // Settings toggle button — top right
+    const settingsBtn = document.createElement('button');
+    settingsBtn.id = 'settingsToggleBtn';
+    settingsBtn.innerHTML = '⚙️';
+    settingsBtn.title = 'Settings';
+    settingsBtn.setAttribute('aria-label', 'Open settings');
+    settingsBtn.style.cssText = 'position:fixed;top:55px;right:15px;z-index:10000;padding:6px 10px;font-size:16px;clip-path:none;background:rgba(0,0,0,0.92);border:1px solid var(--neon-cyan);border-radius:4px;cursor:pointer;';
+    settingsBtn.onclick = () => {
+        const panel = document.getElementById('settingsPanel');
+        const open = panel.style.display === 'flex';
+        panel.style.display = open ? 'none' : 'flex';
+        localStorage.setItem('settingsPanelOpen', !open);
+    };
+    document.body.appendChild(settingsBtn);
+
+    // Settings panel — slides in below the gear icon
+    const panel = document.createElement('div');
+    panel.id = 'settingsPanel';
+    const panelOpen = localStorage.getItem('settingsPanelOpen') === 'true';
+    panel.style.cssText = `position:fixed;top:95px;right:15px;z-index:9999;display:${panelOpen ? 'flex' : 'none'};flex-direction:column;gap:10px;background:rgba(0,0,0,0.95);border:1px solid var(--neon-cyan);padding:12px 14px;border-radius:4px;font-size:12px;min-width:180px;`;
+    panel.setAttribute('role', 'region');
+    panel.setAttribute('aria-label', 'Settings panel');
+    panel.innerHTML = `
+        <div style="color:var(--neon-cyan);font-size:11px;letter-spacing:1px;border-bottom:1px solid #222;padding-bottom:6px;">⚙️ SETTINGS</div>
+
+        <div style="display:flex;flex-direction:column;gap:4px;">
+            <label style="color:#888;font-size:10px;letter-spacing:1px;">🔤 FONT SIZE</label>
+            <select id="fontSizeSelect" aria-label="Font size" onchange="setFontSize(this.value)"
+                style="background:#111;color:var(--neon-cyan);border:1px solid #333;font-size:11px;padding:4px 6px;cursor:pointer;font-family:var(--font-main);border-radius:3px;">
+                <option value="font-sm">Small</option>
+                <option value="font-md">Medium</option>
+                <option value="font-lg">Large</option>
+            </select>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:4px;">
+            <label style="color:#888;font-size:10px;letter-spacing:1px;">🎵 MUSIC TRACK</label>
+            <select id="trackSelect" aria-label="Select music track" onchange="changeTrack(this.value)"
+                style="background:#111;color:var(--neon-cyan);border:1px solid #333;font-size:11px;padding:4px 6px;cursor:pointer;font-family:var(--font-main);border-radius:3px;">
+                <option value="cyberpunk" ${currentTrack==='cyberpunk'?'selected':''}>⚡ Cyberpunk</option>
+                <option value="dark"      ${currentTrack==='dark'     ?'selected':''}>🌑 Dark Ambient</option>
+            </select>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:4px;">
+            <label style="color:#888;font-size:10px;letter-spacing:1px;">🔊 VOLUME</label>
+            <div style="display:flex;align-items:center;gap:6px;">
+                <input id="volumeSlider" type="range" min="0" max="1" step="0.05" value="${globalVolume}"
+                    style="flex:1;accent-color:var(--neon-cyan);cursor:pointer;" title="Volume" aria-label="Volume control" />
+                <button id="muteBtn" onclick="toggleMute()" style="padding:3px 8px;font-size:12px;clip-path:none;" aria-label="Toggle mute">${globalMuted ? '🔇' : '🔈'}</button>
+            </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:4px;">
+            <label style="color:#888;font-size:10px;letter-spacing:1px;">🎵 MUSIC</label>
             <button id="musicBtn" onclick="toggleMusic()" title="Music: ${musicOn ? 'ON' : 'OFF'}" aria-label="Toggle ambient music"
-                style="padding:3px 8px;font-size:10px;clip-path:none;color:${musicOn ? 'var(--neon-cyan)' : '#444'};">🎵</button>
-            <span style="color:#333;">|</span>
-            <span style="color:var(--neon-cyan);" aria-hidden="true">🔊</span>
-            <input id="volumeSlider" type="range" min="0" max="1" step="0.05" value="${globalVolume}"
-                style="width:70px;accent-color:var(--neon-cyan);cursor:pointer;" title="Volume" aria-label="Volume control" />
-            <button id="muteBtn" onclick="toggleMute()" style="padding:3px 8px;font-size:10px;clip-path:none;" aria-label="Toggle mute">${globalMuted ? '🔇' : '🔈'}</button>
+                style="padding:5px;font-size:11px;clip-path:none;color:${musicOn ? 'var(--neon-cyan)' : '#444'};border-color:${musicOn ? 'var(--neon-cyan)' : '#333'};"
+            >${musicOn ? '🎵 Music: ON' : '🎵 Music: OFF'}</button>
         </div>
     `;
-    document.body.appendChild(bar);
-
-    // Font size bar — top right
-    const fontBar = document.createElement('div');
-    fontBar.id = 'fontControlBar';
-    fontBar.setAttribute('role', 'toolbar');
-    fontBar.setAttribute('aria-label', 'Font size controls');
-    fontBar.style.cssText = 'position:fixed;top:55px;right:15px;z-index:9999;display:flex;align-items:center;gap:6px;background:rgba(0,0,0,0.92);border:1px solid var(--neon-cyan);padding:5px 10px;border-radius:4px;font-size:12px;';
-    fontBar.innerHTML = `
-        <span style="color:#555;font-size:10px;letter-spacing:1px;">TEXT</span>
-        <button id="fsBtn-sm" onclick="setFontSize('font-sm')" style="padding:3px 6px;font-size:9px;clip-path:none;" title="Small text" aria-label="Small font size">A</button>
-        <button id="fsBtn-md" onclick="setFontSize('font-md')" style="padding:3px 6px;font-size:11px;clip-path:none;" title="Medium text" aria-label="Medium font size">A</button>
-        <button id="fsBtn-lg" onclick="setFontSize('font-lg')" style="padding:3px 6px;font-size:14px;clip-path:none;" title="Large text" aria-label="Large font size">A</button>
-    `;
-    document.body.appendChild(fontBar);
+    document.body.appendChild(panel);
 
     document.getElementById('volumeSlider').oninput = (e) => {
         globalVolume = parseFloat(e.target.value);
@@ -306,34 +338,13 @@ function injectAudioControls() {
         syncMusicVolume();
     };
 
-    document.getElementById('trackSelect').onchange = (e) => {
-        currentTrack = e.target.value;
-        localStorage.setItem('musicTrack', currentTrack);
-        if (musicOn) startAmbientMusic();
-    };
-
     if (musicOn) startAmbientMusic();
     highlightFontBtn(savedFont);
 }
 
 function highlightFontBtn(cls) {
-    const isHC = document.documentElement.classList.contains('high-contrast') ||
-                 document.body.parentElement.classList.contains('high-contrast');
-    ['font-sm', 'font-md', 'font-lg'].forEach(c => {
-        const btn = document.getElementById('fsBtn-' + c.replace('font-', ''));
-        if (!btn) return;
-        const active = c === cls;
-        if (isHC) {
-            btn.style.setProperty('background', active ? '#fff' : '#000', 'important');
-            btn.style.setProperty('color', active ? '#000' : '#fff', 'important');
-            btn.style.setProperty('border-color', '#000', 'important');
-            btn.style.setProperty('outline', active ? '2px solid #000' : 'none', 'important');
-        } else {
-            btn.style.color = active ? 'var(--neon-cyan)' : '#555';
-            btn.style.borderColor = active ? 'var(--neon-cyan)' : '#333';
-            btn.style.background = active ? 'rgba(0,243,255,0.1)' : 'transparent';
-        }
-    });
+    const sel = document.getElementById('fontSizeSelect');
+    if (sel) sel.value = cls;
 }
 
 window.toggleMute = function() {

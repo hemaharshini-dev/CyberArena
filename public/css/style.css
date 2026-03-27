@@ -1052,3 +1052,24 @@ button:disabled .lock-overlay {
     -webkit-overflow-scrolling: touch;
   }
 }
+
+/* ============================================================
+   ⚙️ SETTINGS PANEL — mobile
+============================================================ */
+@media (max-width: 600px) {
+  #settingsToggleBtn {
+    top: auto !important;
+    bottom: 15px !important;
+    right: 15px !important;
+  }
+
+  #settingsPanel {
+    top: auto !important;
+    bottom: 60px !important;
+    right: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    border-radius: 0 !important;
+    box-sizing: border-box !important;
+  }
+}
