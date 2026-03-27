@@ -36,16 +36,10 @@ const steps = [
     position: 'top',
   },
   {
-    target: '.user-stats',
-    title: '📊 Your Profile & XP',
-    text: 'Every correct decision earns you XP. Your rank climbs from Novice → Specialist → Elite Guardian. Unlock achievement badges as you hit XP milestones.',
-    position: 'top',
-  },
-  {
-    target: '.leaderboard',
-    title: '🏆 Global Leaderboard',
-    text: 'The top 5 players by XP are shown here in real time. Complete missions, earn XP, and climb the ranks. You\'re all set — good luck, Guardian!',
-    position: 'top',
+    target: '.top-bar',
+    title: '👤 Your Profile & Leaderboard',
+    text: 'Click the 👤 Profile button in the top bar to view your XP, rank, achievement badges, completed missions, unlocks progress, and the Global Leaderboard — all in one place.',
+    position: 'bottom',
   },
 ];
 

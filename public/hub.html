@@ -34,14 +34,13 @@
             <button class="secondary-btn" onclick="toggleHighContrast()" style="padding: 5px 10px; font-size: 10px;">🌓 High Contrast</button>
             <button id="replayTourBtn" class="secondary-btn" onclick="replayTour()" title="Replay the onboarding tour">🧭 Tour</button>
             <button class="secondary-btn" onclick="showHowToPlay()" title="How to play CyberArena" style="padding: 5px 10px; font-size: 10px;">🎮 Guide</button>
+            <button class="secondary-btn" onclick="window.location.href='profile.html'" title="Your Profile" style="padding: 5px 10px; font-size: 10px;">👤 Profile</button>
         </div>
         <button class="logout-btn" onclick="logout()">Logout</button>
       </div>
 
       <h1>🛡️ CyberArena</h1>
       <p>Select Your Mission</p>
-
-      <!-- How to Play Modal -->
       <div id="howToPlayModal" class="modal" style="display:none;">
         <div class="modal-content" style="max-width:600px; padding:30px;">
           <h2 style="color:var(--neon-cyan); margin-top:0;">🎮 How to Play CyberArena</h2>
@@ -122,94 +121,14 @@
         </div>
       </div>
 
-      <hr />
-
-      <div class="user-stats">
-        <h2>📊 Your Profile</h2>
-        <div class="profile-layout">
-          <div class="xp-container">
-            <div id="profileSkeleton">
-              <div class="skeleton" style="width:60%;"></div>
-              <div class="skeleton" style="width:100%; height:12px;"></div>
-              <div class="skeleton" style="width:40%;"></div>
-              <div class="skeleton" style="width:50%;"></div>
-            </div>
-            <div id="profileData" style="display:none;">
-            <p id="rankLabel" class="rank-label">Rank: Novice</p>
-            <div class="progress-bar">
-              <div id="userXPFill" style="width: 0%;"></div>
-            </div>
-            <p id="userXP">XP: Loading...</p>
-            <p id="missionsCompleted">Missions Completed: Loading...</p>
-            <button id="shareScoreBtn" class="secondary-btn" onclick="shareScore()" style="margin-top:10px; padding:8px 16px; font-size:11px; display:none;">📤 Share Your Score</button>
-            
-            <!-- Mission Completion Tracker -->
-            <div id="missionTracker" style="margin-top:20px; display:none;">
-              <h4 style="font-size:12px; color:var(--neon-cyan); margin-bottom:8px;">✅ Completed Missions</h4>
-              <div id="missionCheckList" style="font-size:11px; line-height:1.8; color:#9ca3af;"></div>
-            </div>
-            </div>
-          </div>
-          
-          <div class="achievement-gallery">
-            <h3>🏅 Achievements</h3>
-            <div id="badgeList" class="badge-list">
-              <!-- Badges will be injected here -->
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="leaderboard">
-        <h2>🏆 Global Leaderboard</h2>
-        <div id="leaderboardSkeleton">
-          <div class="skeleton" style="width:80%;"></div>
-          <div class="skeleton" style="width:65%;"></div>
-          <div class="skeleton" style="width:72%;"></div>
-          <div class="skeleton" style="width:55%;"></div>
-          <div class="skeleton" style="width:68%;"></div>
-        </div>
-        <ul id="leaderboardList" style="display:none;">
-          <li>Loading...</li>
-        </ul>
-      </div>
     </div>
 
     <script type="module">
       import { auth, db } from "./js/firebase.js";
       import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
       import { getUserData } from "./js/xp.js";
-      import { collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
       import { initTour } from "./js/tour.js";
-      import { applyLockStates, getNewlyUnlocked, showUnlockToast, UNLOCKS, getUnlockXP } from "./js/unlocks.js";
-
-      async function loadLeaderboard() {
-        try {
-          const list = document.getElementById("leaderboardList");
-          const q = query(collection(db, "users"), orderBy("xp", "desc"), limit(5));
-          const querySnapshot = await getDocs(q);
-          
-          list.innerHTML = "";
-          if (querySnapshot.empty) {
-            list.innerHTML = "<li>No data available</li>";
-          } else {
-            querySnapshot.forEach((doc) => {
-              const data = doc.data();
-              const li = document.createElement("li");
-              const name = data.email ? data.email.split('@')[0] : "Anonymous";
-              li.innerHTML = `<span>${name}</span> <span>${data.xp || 0} XP</span>`;
-              list.appendChild(li);
-            });
-          }
-          document.getElementById("leaderboardSkeleton").style.display = "none";
-          list.style.display = "block";
-        } catch (error) {
-          console.error("Error loading leaderboard:", error);
-          document.getElementById("leaderboardSkeleton").style.display = "none";
-          document.getElementById("leaderboardList").innerHTML = "<li>Failed to load leaderboard</li>";
-          document.getElementById("leaderboardList").style.display = "block";
-        }
-      }
+      import { applyLockStates, getNewlyUnlocked, showUnlockToast } from "./js/unlocks.js";
 
       function startActivityTicker() {
         const activities = [
@@ -240,32 +159,7 @@
             const userData = await getUserData();
             if (userData) {
               const xp = userData.xp || 0;
-              document.getElementById("userXP").innerText = `XP: ${xp}`;
-              document.getElementById("missionsCompleted").innerText = `Missions Completed: ${userData.missionsCompleted || 0}`;
-              
-              // Rank Calculation
-              let rank = "Novice";
-              let nextXP = 100;
-              let currentLevelXP = 0;
-              
-              if (xp >= 500) {
-                rank = "Elite Guardian";
-                nextXP = 1000;
-                currentLevelXP = 500;
-              } else if (xp >= 100) {
-                rank = "Specialist";
-                nextXP = 500;
-                currentLevelXP = 100;
-              }
-              
-              const progress = ((xp - currentLevelXP) / (nextXP - currentLevelXP)) * 100;
-              document.getElementById("rankLabel").innerText = `Rank: ${rank}`;
-              document.getElementById("userXPFill").style.width = `${Math.min(progress, 100)}%`;
-
-              // Apply lock/unlock states to mission buttons
               applyLockStates(xp);
-
-              // Show unlock toasts for anything newly unlocked this session
               const prevXP = parseInt(localStorage.getItem('prevXP') || '0');
               if (prevXP < xp) {
                 getNewlyUnlocked(prevXP, xp).forEach((u, i) => {
@@ -273,97 +167,16 @@
                 });
               }
               localStorage.setItem('prevXP', xp);
-
-              // Show profile data, hide skeleton
-              document.getElementById("profileSkeleton").style.display = "none";
-              document.getElementById("profileData").style.display = "block";
-              document.getElementById("shareScoreBtn").style.display = "block";
-
-              // Mission Completion Tracker
-              const completedMissions = userData.completedMissions || [];
-              const allMissions = [
-                { id: 'phishing', name: '🕵️ Phishing Detective' },
-                { id: 'social', name: '🎭 Social Engineering' },
-                { id: 'smishing', name: '📱 Smishing Simulator' },
-                { id: 'ai', name: '🤖 AI Crime Lab' },
-                { id: 'malware', name: '🧩 Malware Escape' },
-                { id: 'password', name: '🛡️ Password Lab' },
-                { id: 'darkweb', name: '🌐 Dark Web Market' },
-                { id: 'incident', name: '🚨 Incident Response' },
-                { id: 'creator', name: '🧪 Mission Creator' },
-                { id: 'wiki', name: '📖 Cyber-Wiki' }
-              ];
-              
-              const missionCheckList = document.getElementById('missionCheckList');
-              missionCheckList.innerHTML = allMissions.map(m => {
-                const completed = completedMissions.includes(m.id);
-                return `<div>${completed ? '✅' : '⬜'} ${m.name}</div>`;
-              }).join('');
-              document.getElementById('missionTracker').style.display = 'block';
-
-              // Unlocks Panel
-              const unlockPanel = document.createElement('div');
-              unlockPanel.className = 'unlocks-panel';
-              unlockPanel.innerHTML = `<h4 style="font-size:12px;color:var(--neon-cyan);margin-bottom:8px;">🔓 Unlocks</h4>` +
-                UNLOCKS.filter(u => u.type === 'mission' || u.type === 'feature').map(u => {
-                  const done = xp >= u.xpRequired;
-                  const pct = Math.min(100, Math.round((xp / u.xpRequired) * 100));
-                  return `<div class="unlock-row">
-                    <span class="unlock-icon">${done ? '✅' : '🔒'}</span>
-                    <span class="unlock-label">${u.label}</span>
-                    ${done
-                      ? `<span class="unlock-status-done">Unlocked</span>`
-                      : `<div class="unlock-bar"><div class="unlock-bar-fill" style="width:${pct}%"></div></div>
-                         <span class="unlock-status-locked">${u.xpRequired} XP</span>`
-                    }
-                  </div>`;
-                }).join('');
-              document.getElementById('profileData').appendChild(unlockPanel);
-
-              // Achievements Display
-              const badgeList = document.getElementById("badgeList");
-              badgeList.innerHTML = "";
-              
-              const possibleBadges = [
-                { id: "rookie", name: "Rookie", icon: "🔰", threshold: 0 },
-                { id: "detective", name: "Detective", icon: "🔍", threshold: 50 },
-                { id: "shield", name: "Shield", icon: "🛡️", threshold: 200 },
-                { id: "elite", name: "Elite", icon: "👑", threshold: 500 }
-              ];
-
-              possibleBadges.forEach(badge => {
-                if (xp >= badge.threshold) {
-                  const span = document.createElement("span");
-                  span.className = "badge";
-                  span.title = badge.name;
-                  span.innerText = badge.icon;
-                  badgeList.appendChild(span);
-                }
-              });
             }
-            await loadLeaderboard();
             startActivityTicker();
-            
-            // Show How to Play modal on first login
             if (!localStorage.getItem('cyberarena_guide_seen')) {
               setTimeout(() => {
                 document.getElementById('howToPlayModal').style.display = 'flex';
               }, 800);
             }
-            
-            // Start tour after everything is loaded
             initTour();
           } catch (error) {
             console.error("Error loading user data:", error);
-            // Graceful offline / network failure fallback
-            document.getElementById("profileSkeleton").style.display = "none";
-            document.getElementById("profileData").style.display = "block";
-            document.getElementById("userXP").innerText = "XP: unavailable (offline)";
-            document.getElementById("missionsCompleted").innerText = "";
-            document.getElementById("rankLabel").innerText = "Rank: --";
-            document.getElementById("leaderboardSkeleton").style.display = "none";
-            document.getElementById("leaderboardList").innerHTML = "<li style='color:#666;'>Leaderboard unavailable — check your connection.</li>";
-            document.getElementById("leaderboardList").style.display = "block";
             startActivityTicker();
           }
         }
@@ -381,28 +194,9 @@
         localStorage.setItem('cyberarena_guide_seen', '1');
       }
 
-      // Close modal on backdrop click
       document.getElementById('howToPlayModal').addEventListener('click', (e) => {
         if (e.target === document.getElementById('howToPlayModal')) closeHowToPlay();
       });
-
-      function shareScore() {
-        const xp = document.getElementById('userXP').innerText;
-        const rank = document.getElementById('rankLabel').innerText;
-        const missions = document.getElementById('missionsCompleted').innerText;
-        const text = `🛡️ CyberArena Training Report\n${rank}\n${xp}\n${missions}\n\nI'm training to become an Elite Guardian in cybersecurity! Try CyberArena 🔗`;
-        
-        if (navigator.share) {
-          navigator.share({ title: 'CyberArena Score', text });
-        } else {
-          navigator.clipboard.writeText(text).then(() => {
-            const btn = document.getElementById('shareScoreBtn');
-            const orig = btn.innerText;
-            btn.innerText = '✅ Copied!';
-            setTimeout(() => btn.innerText = orig, 2000);
-          });
-        }
-      }
     </script>
   </body>
 </html>
