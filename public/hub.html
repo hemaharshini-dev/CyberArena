@@ -35,6 +35,10 @@
             <button id="replayTourBtn" class="secondary-btn" onclick="replayTour()" title="Replay the onboarding tour">🧭 Tour</button>
             <button class="secondary-btn" onclick="showHowToPlay()" title="How to play CyberArena" style="padding: 5px 10px; font-size: 10px;">🎮 Guide</button>
             <button class="secondary-btn" onclick="window.location.href='profile.html'" title="Your Profile" style="padding: 5px 10px; font-size: 10px;">👤 Profile</button>
+            <div style="position:relative;display:inline-block;">
+              <button id="bellBtn" class="secondary-btn" onclick="toggleBell()" title="Notifications" style="padding:5px 10px;font-size:14px;">🔔</button>
+              <span id="bellBadge" style="display:none;position:absolute;top:-4px;right:-4px;background:#ff003c;color:#fff;font-size:9px;font-family:var(--font-main);border-radius:50%;width:16px;height:16px;display:flex;align-items:center;justify-content:center;pointer-events:none;">0</span>
+            </div>
         </div>
         <button class="logout-btn" onclick="logout()">Logout</button>
       </div>
@@ -74,6 +78,15 @@
           </div>
           <button class="primary-btn" onclick="closeHowToPlay()" style="margin-top:20px; width:100%;">Got It — Let's Start!</button>
         </div>
+      </div>
+
+      <!-- Notification dropdown -->
+      <div id="bellPanel" style="display:none;position:fixed;top:95px;right:15px;z-index:9998;background:rgba(0,0,0,0.95);border:1px solid var(--neon-green);border-radius:4px;min-width:260px;max-width:320px;font-size:12px;box-shadow:0 0 20px rgba(57,255,20,0.15);">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid #1a1a1a;">
+          <span style="color:var(--neon-green);font-family:var(--font-cyber);font-size:11px;letter-spacing:1px;">🔔 UNLOCKS</span>
+          <button onclick="clearBell()" style="font-size:9px;padding:2px 8px;clip-path:none;color:#555;border-color:#333;">Mark all read</button>
+        </div>
+        <div id="bellList" style="max-height:300px;overflow-y:auto;padding:8px 0;"></div>
       </div>
 
       <div class="mission-section" id="tour-social">
@@ -128,7 +141,62 @@
       import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
       import { getUserData } from "./js/xp.js";
       import { initTour } from "./js/tour.js";
-      import { applyLockStates, getNewlyUnlocked, showUnlockToast } from "./js/unlocks.js";
+      import { applyLockStates, getNewlyUnlocked, addUnlockNotification, getUnreadCount, markAllRead, getNotifications } from "./js/unlocks.js";
+
+      function updateBell() {
+        const count = getUnreadCount();
+        const badge = document.getElementById('bellBadge');
+        if (count > 0) {
+          badge.style.display = 'flex';
+          badge.textContent = count;
+        } else {
+          badge.style.display = 'none';
+        }
+      }
+
+      window.toggleBell = function() {
+        const panel = document.getElementById('bellPanel');
+        const open = panel.style.display === 'block';
+        if (!open) {
+          renderBellList();
+          panel.style.display = 'block';
+        } else {
+          panel.style.display = 'none';
+        }
+      };
+
+      function renderBellList() {
+        const list = document.getElementById('bellList');
+        const notifications = getNotifications();
+        if (!notifications.length) {
+          list.innerHTML = '<div style="padding:12px 14px;color:#555;">No unlocks yet. Keep earning XP!</div>';
+          return;
+        }
+        list.innerHTML = notifications.slice().reverse().map(n => `
+          <div style="padding:10px 14px;border-bottom:1px solid #111;display:flex;gap:10px;align-items:flex-start;opacity:${n.read ? '0.5' : '1'};">
+            <span style="font-size:16px;">${n.read ? '✅' : '🔓'}</span>
+            <div>
+              <div style="color:var(--neon-green);font-family:var(--font-cyber);font-size:11px;">${n.label}</div>
+              <div style="color:#888;font-size:10px;margin-top:2px;">${n.description.replace('Reach','Reached')}</div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      window.clearBell = function() {
+        markAllRead();
+        updateBell();
+        renderBellList();
+      };
+
+      // Close bell panel when clicking outside
+      document.addEventListener('click', (e) => {
+        const panel = document.getElementById('bellPanel');
+        const btn = document.getElementById('bellBtn');
+        if (panel && !panel.contains(e.target) && e.target !== btn) {
+          panel.style.display = 'none';
+        }
+      });
 
       function startActivityTicker() {
         const activities = [
@@ -160,13 +228,14 @@
             if (userData) {
               const xp = userData.xp || 0;
               applyLockStates(xp);
-              const prevXP = parseInt(localStorage.getItem('prevXP') || '0');
-              if (prevXP < xp) {
-                getNewlyUnlocked(prevXP, xp).forEach((u, i) => {
-                  setTimeout(() => showUnlockToast(u), i * 1000);
-                });
+              // Store new unlocks into notification bell (never show popup)
+              const seenUnlocks = JSON.parse(localStorage.getItem('seenUnlocks') || '[]');
+              const newItems = getNewlyUnlocked(0, xp).filter(u => !seenUnlocks.includes(u.id));
+              newItems.forEach(u => addUnlockNotification(u));
+              if (newItems.length) {
+                localStorage.setItem('seenUnlocks', JSON.stringify([...seenUnlocks, ...newItems.map(u => u.id)]));
               }
-              localStorage.setItem('prevXP', xp);
+              updateBell();
             }
             startActivityTicker();
             if (!localStorage.getItem('cyberarena_guide_seen')) {

@@ -75,29 +75,26 @@ export function applyLockStates(xp) {
   });
 }
 
-// ── SHOW UNLOCK TOAST ─────────────────────────────────────────
-export function showUnlockToast(unlock) {
-  const isHC = document.documentElement.classList.contains('high-contrast');
-  const toast = document.createElement('div');
-  toast.style.cssText = `
-    position:fixed;top:70px;left:50%;transform:translateX(-50%);
-    background:${isHC ? '#fff' : 'rgba(0,0,0,0.95)'};
-    border:2px solid ${isHC ? '#000' : 'var(--neon-green)'};
-    padding:14px 24px;border-radius:4px;z-index:99999;
-    font-family:var(--font-cyber);font-size:13px;
-    color:${isHC ? '#000' : 'var(--neon-green)'};
-    box-shadow:${isHC ? 'none' : '0 0 20px rgba(57,255,20,0.3)'};
-    text-align:center;animation:slideIn 0.4s ease-out;
-  `;
-  toast.innerHTML = `
-    <div style="font-size:10px;letter-spacing:2px;color:${isHC ? '#000' : '#555'};margin-bottom:4px;">UNLOCKED</div>
-    <div style="color:${isHC ? '#000' : 'var(--neon-green)'}">${unlock.label}</div>
-    <div style="font-size:11px;color:${isHC ? '#333' : '#888'};margin-top:4px;font-family:var(--font-main);">${unlock.description.replace('Reach','Reached')}</div>
-  `;
-  document.body.appendChild(toast);
-  setTimeout(() => {
-    toast.style.transition = 'opacity 0.5s';
-    toast.style.opacity = '0';
-    setTimeout(() => toast.remove(), 500);
-  }, 3500);
+// ── NOTIFICATION BELL ─────────────────────────────────────────
+export function addUnlockNotification(unlock) {
+  const notifications = JSON.parse(localStorage.getItem('unlockNotifications') || '[]');
+  // Don't add duplicates
+  if (notifications.find(n => n.id === unlock.id)) return;
+  notifications.push({ id: unlock.id, label: unlock.label, description: unlock.description, read: false });
+  localStorage.setItem('unlockNotifications', JSON.stringify(notifications));
+}
+
+export function getUnreadCount() {
+  const notifications = JSON.parse(localStorage.getItem('unlockNotifications') || '[]');
+  return notifications.filter(n => !n.read).length;
+}
+
+export function markAllRead() {
+  const notifications = JSON.parse(localStorage.getItem('unlockNotifications') || '[]');
+  notifications.forEach(n => n.read = true);
+  localStorage.setItem('unlockNotifications', JSON.stringify(notifications));
+}
+
+export function getNotifications() {
+  return JSON.parse(localStorage.getItem('unlockNotifications') || '[]');
 }
