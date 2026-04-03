@@ -95,8 +95,8 @@ Missions are grouped into three categories on the Hub:
 
 *   **Frontend:** HTML5, CSS3 (Retro-Cyberpunk aesthetic with CRT effects, scanlines, and neon animations). Fully responsive with mobile media queries (`<600px`, `601–900px`).
 *   **Database & Auth:** **Firebase** (Firestore for XP/Leaderboard/Daily Scores and Firebase Auth for Email/Password + Google Sign-In).
-*   **Audio Engine:** **Web Audio API** — procedurally generated success, error, and click sounds, plus two selectable ambient music tracks (Cyberpunk and Dark Ambient) with reverb, arpeggios, kick/hihat rhythm, and LFO modulation.
-*   **Logic:** Modular ES6+ JavaScript.
+*   **Audio Engine:** **Web Audio API** — procedurally generated success, error, and click sounds, plus three selectable ambient music tracks (Cyberpunk, Dark Ambient, Hacker Terminal) with reverb, arpeggios, kick/hihat rhythm, and LFO modulation.
+*   **Logic:** Modular ES6+ JavaScript with clear single-responsibility module boundaries.
 *   **AI Integration:** OpenRouter API (Mistral-7B) for live phishing scenario generation with a local fallback engine.
 *   **Adaptive Learning:** `adaptive.js` engine delivers difficulty scaling (timer, extra steps) and actionable safety protocols based on user XP rank.
 
@@ -106,12 +106,13 @@ Missions are grouped into three categories on the Hub:
 
 | Mechanic | Description |
 | :--- | :--- |
-| **XP & Leaderboard** | Earn XP for every successful mission and climb the global top-5 ranks (stored in Firestore). |
+| **XP & Leaderboard** | Earn XP for every successful mission and climb the global ranks (stored in Firestore). |
+| **Daily XP Cap** | Each mission awards XP only once per calendar day — enforced server-side in Firestore. Replaying a mission after earning XP that day gives 0 XP, preventing spam farming. Resets at midnight. |
 | **Rank System** | Novice (0 XP) → Specialist (100 XP) → Elite Guardian (500 XP), with a progress bar. |
 | **Adaptive Difficulty** | Timer and scenario complexity scale with XP rank. Novice: 30s timer. Specialist: 27s + extra social engineering steps. Elite: 25s + extra steps. |
 | **Achievements / Badges** | Unlock badges: 🔰 Rookie (0 XP), 🔍 Detective (50 XP), 🛡️ Shield (200 XP), 👑 Elite (500 XP). |
 | **Mission Locks** | Dark Web (50 XP), AI Crime Lab (75 XP), Incident Response (100 XP), Mission Creator (150 XP). Locked missions show a 🔒 overlay with the required XP. |
-| **🔔 Notification Bell** | When you earn enough XP to unlock a mission or feature, a red badge appears on the 🔔 bell icon in the top bar. Click it to see all unlocks — no intrusive popups. Mark all as read to clear the badge. |
+| **🔔 Notification Bell** | When you earn enough XP to unlock a mission or feature, a red badge appears on the 🔔 bell icon in the top bar. Badge only lights up for genuinely new unlocks earned since your last visit — not on every page load. Mark all as read to clear it. |
 | **Hard Mode** | Unlocked at 300 XP — all missions run at Elite difficulty. |
 | **Mission Completion Tracker** | Profile page shows ✅/⬜ status for all 10 missions. |
 | **Unlocks Panel** | Progress bars in the profile show how close you are to each locked mission/feature. |
@@ -128,7 +129,7 @@ Missions are grouped into three categories on the Hub:
 | **Activity Ticker** | Live scrolling feed on the Hub simulating global community activity. |
 | **High Contrast Mode** | Accessibility toggle persisted via `localStorage`. |
 | **⚙️ Settings Panel** | Gear icon (fixed, top-right) opens a panel with Font Size (Small/Medium/Large dropdown), Music Track selector, Volume slider, Mute button, and Music ON/OFF toggle. All settings persisted via `localStorage`. |
-| **Music Tracks** | Two selectable ambient tracks: ⚡ Cyberpunk (120 BPM minor pentatonic arpeggio + kick/hihat + reverb) and 🌑 Dark Ambient (slow evolving pads + sub-bass + occasional deep thuds). |
+| **Music Tracks** | Three selectable ambient tracks: ⚡ Cyberpunk (120 BPM minor pentatonic arpeggio + kick/hihat + reverb), 🌑 Dark Ambient (slow evolving pads + sub-bass + occasional deep thuds), and 💻 Hacker Terminal (glitchy bleeps + low pulse). |
 | **Audio Controls** | Volume slider, mute button, music toggle, and track selector — all inside the ⚙️ Settings panel. |
 | **Breadcrumbs** | Auto-injected navigation trail on all mission pages. |
 | **Personalized Greeting** | Hub shows "Hi, [name]!" using `displayName` for Google users or the part before `@` for email/password users. |
@@ -142,7 +143,7 @@ Missions are grouped into three categories on the Hub:
 CyberArena/
 ├── hub.html            # Mission Hub — missions only, top bar with Profile & Bell
 ├── profile.html        # Dedicated Profile page — XP, rank, badges, missions, unlocks, leaderboard
-├── index.html          # Firebase Auth Portal (Email/Password + Google)
+├── index.html          # Firebase Auth Portal (Google Sign-In)
 ├── phishing.html       # Phishing Detective Mission
 ├── social.html         # Social Engineering Simulator
 ├── ai.html             # AI Crime Lab (Deepfake Detection)
@@ -158,9 +159,13 @@ CyberArena/
 │   └── style.css       # Neon-Cyberpunk UI Framework + mobile media queries + tour styles + settings panel
 └── js/
     ├── firebase.js     # Firebase Config & Initialization
-    ├── auth.js         # Authentication Logic — shows "Hi, name!" greeting on login
-    ├── xp.js           # XP & Firestore Data Management (updateXP, getUserData)
-    ├── common.js       # Shared Navigation, Breadcrumbs, High Contrast, ⚙️ Settings Panel & Audio Engine
+    ├── auth.js         # Auth boundary for the whole app — redirect, logout, XP-guard for locked missions
+    ├── xp.js           # XP & Firestore Data Management (updateXP with daily cap, getUserData)
+    ├── common.js       # Loader — sources music.js, sounds.js, breadcrumb.js, settings.js + navigation helpers
+    ├── music.js        # Ambient music engine — 3 tracks (Cyberpunk, Dark Ambient, Hacker Terminal)
+    ├── sounds.js       # UI sound effects (success, error, click) + global button click listener
+    ├── breadcrumb.js   # Auto-injects navigation breadcrumb on mission pages
+    ├── settings.js     # Settings panel UI, high-contrast, font size, mute, volume
     ├── audio.js        # Standalone Audio Module (ES6 export)
     ├── adaptive.js     # Adaptive Difficulty Engine — timerSeconds (30/27/25), extraSteps, safetyProtocols
     ├── tour.js         # 6-step Onboarding Tour — spotlight overlay, dots, localStorage persistence
@@ -187,6 +192,12 @@ CyberArena/
     ```
 2.  **Firebase Setup**
     *   The project is pre-configured with a demo Firebase project (`cyberarena-77a96`). To use your own, update `js/firebase.js` with your project credentials.
+    *   Ensure your Firestore security rules allow authenticated users to read and write their own document:
+    ```
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    ```
 3.  **Run Locally**
     *   Open `index.html` in any modern web browser. A local server (e.g., VS Code Live Server) is recommended for Firebase ES modules to load correctly.
 4.  **Or visit the live hosted version directly at [https://cyberarena-77a96.web.app](https://cyberarena-77a96.web.app)**
@@ -211,12 +222,27 @@ CyberArena/
 | `muted` | Audio mute state |
 | `volume` | Master volume level (0–1) |
 | `musicOn` | Ambient music on/off state |
-| `musicTrack` | Selected music track (`cyberpunk` or `dark`) |
+| `musicTrack` | Selected music track (`cyberpunk`, `dark`, or `hacker`) |
 | `fontSize` | Font size class (`font-sm`, `font-md`, `font-lg`) |
 | `settingsPanelOpen` | Whether the ⚙️ settings panel is open or closed |
 | `openrouter_api_key` | OpenRouter API key for live AI phishing scenarios |
+| `lastSeenXP` | XP value at last hub visit — used to detect genuinely new unlocks for the 🔔 bell |
 | `seenUnlocks` | Array of unlock IDs already processed — prevents duplicate bell notifications |
 | `unlockNotifications` | Array of unlock notification objects `{ id, label, description, read }` for the 🔔 bell |
+
+---
+
+## 🔒 XP Integrity
+
+XP farming is prevented by a **per-mission daily cap** enforced server-side in Firestore:
+
+- Each mission can award XP only **once per calendar day** per user.
+- On completion, `updateXP()` writes `dailyXP.{missionId}_{YYYY-MM-DD} = true` to the user's Firestore document.
+- On the next call for the same mission that day, the flag is detected before any write occurs and the function returns early.
+- The key is date-scoped, so XP resets naturally at midnight with no cleanup job needed.
+- Because the check happens against Firestore (not `localStorage`), it cannot be bypassed by clearing browser storage.
+
+The Daily Challenge has its own separate replay protection via `dailyScores/{dateKey}/players` in Firestore.
 
 ---
 

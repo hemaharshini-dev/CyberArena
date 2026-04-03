@@ -160,7 +160,7 @@ verifyMFABtn.onclick = () => {
 
     if (entered === actual) {
         alert("✅ MFA Verified! 10 XP Gained.");
-        updateXP(10);
+        updateXP(10, 'password');
         mfaPrompt.style.display = "none";
     } else {
         alert("❌ Wrong code. Try again.");

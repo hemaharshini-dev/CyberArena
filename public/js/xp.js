@@ -8,6 +8,10 @@ import {
   arrayUnion,
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+function todayKey() {
+  return new Date().toISOString().slice(0, 10); // "YYYY-MM-DD"
+}
+
 export async function updateXP(points, missionId = null) {
   const user = auth.currentUser;
   if (!user) return;
@@ -15,11 +19,21 @@ export async function updateXP(points, missionId = null) {
   const userRef = doc(db, "users", user.uid);
   const userSnap = await getDoc(userRef);
 
+  // Per-mission daily cap: only award XP once per mission per calendar day
+  if (missionId && userSnap.exists()) {
+    const played = userSnap.data().dailyXP || {};
+    const key = `${missionId}_${todayKey()}`;
+    if (played[key]) return;
+  }
+
   const updateData = {
     xp: increment(points),
     missionsCompleted: increment(1),
   };
-  if (missionId) updateData.completedMissions = arrayUnion(missionId);
+  if (missionId) {
+    updateData.completedMissions = arrayUnion(missionId);
+    updateData[`dailyXP.${missionId}_${todayKey()}`] = true;
+  }
 
   if (userSnap.exists()) {
     await updateDoc(userRef, updateData);
@@ -29,6 +43,7 @@ export async function updateXP(points, missionId = null) {
       xp: points,
       missionsCompleted: 1,
       completedMissions: missionId ? [missionId] : [],
+      dailyXP: missionId ? { [`${missionId}_${todayKey()}`]: true } : {},
       achievements: [],
     });
   }

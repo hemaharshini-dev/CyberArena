@@ -115,7 +115,7 @@ function makeDecision(userChoice) {
     updateXP(score, 'ai');
   } else {
     score -= 10;
-    updateXP(0);
+    updateXP(0, 'ai');
   }
 
   const resultLabel = correct
