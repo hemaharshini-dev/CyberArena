@@ -150,21 +150,12 @@
       <div id="missionArea"></div>
     </div>
 
+    <script type="module" src="js/auth.js"></script>
     <script type="module">
       import { auth } from "./js/firebase.js";
       import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
       import { updateXP, getUserData } from "./js/xp.js";
       import { showSafetySteps } from "./js/adaptive.js";
-      import { guardMission } from "./js/guard.js";
-
-      onAuthStateChanged(auth, async (user) => {
-        if (!user) { window.location.href = "login.html"; return; }
-        await guardMission('incident');
-        const data = await getUserData();
-        const xp = data?.xp || 0;
-        document.getElementById("xpDisplay").innerText = `⚡ ${xp} XP`;
-        startSimulator();
-      });
 
       // ── SCENARIO TREE ──────────────────────────────────────────
       // Each node: { id, tag, title, body, choices: [{text, next, damage, consequence, good}] }
@@ -418,7 +409,12 @@
         updateDots();
       };
 
-      startSimulator();
+      onAuthStateChanged(auth, async (user) => {
+        if (!user) return;
+        const data = await getUserData();
+        document.getElementById("xpDisplay").innerText = `⚡ ${data?.xp || 0} XP`;
+        startSimulator();
+      });
     </script>
     <script src="js/common.js"></script>
   </body>

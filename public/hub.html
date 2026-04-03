@@ -228,11 +228,12 @@
             if (userData) {
               const xp = userData.xp || 0;
               applyLockStates(xp);
-              // Store new unlocks into notification bell (never show popup)
-              const seenUnlocks = JSON.parse(localStorage.getItem('seenUnlocks') || '[]');
-              const newItems = getNewlyUnlocked(0, xp).filter(u => !seenUnlocks.includes(u.id));
+              const lastXP = parseInt(localStorage.getItem('lastSeenXP') || '0', 10);
+              const newItems = getNewlyUnlocked(lastXP, xp).filter(u => !seenUnlocks.includes(u.id));
+              localStorage.setItem('lastSeenXP', xp);
               newItems.forEach(u => addUnlockNotification(u));
               if (newItems.length) {
+                const seenUnlocks = JSON.parse(localStorage.getItem('seenUnlocks') || '[]');
                 localStorage.setItem('seenUnlocks', JSON.stringify([...seenUnlocks, ...newItems.map(u => u.id)]));
               }
               updateBell();
