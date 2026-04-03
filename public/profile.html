@@ -35,17 +35,80 @@
         border-bottom: 1px solid rgba(0,243,255,0.1);
         padding-bottom: 8px;
       }
-      .leaderboard ul { list-style: none; padding: 0; margin: 0; }
-      .leaderboard li {
+      .lb-modal-backdrop {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.85);
+        z-index: 20000;
+        align-items: center;
+        justify-content: center;
+      }
+      .lb-modal-backdrop.open { display: flex; }
+      .lb-modal {
+        background: var(--terminal-bg);
+        border: 2px solid var(--neon-cyan);
+        border-radius: 6px;
+        padding: 28px;
+        width: 95%;
+        max-width: 520px;
+        max-height: 80vh;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 0 40px rgba(0,243,255,0.2);
+        animation: slideUp 0.25s ease-out;
+      }
+      @keyframes slideUp {
+        from { transform: translateY(20px); opacity: 0; }
+        to   { transform: translateY(0);    opacity: 1; }
+      }
+      .lb-modal-header {
         display: flex;
         justify-content: space-between;
-        padding: 8px 0;
+        align-items: center;
+        margin-bottom: 16px;
+        border-bottom: 1px solid rgba(0,243,255,0.15);
+        padding-bottom: 12px;
+      }
+      .lb-modal-header h3 {
+        font-family: var(--font-cyber);
+        color: var(--neon-cyan);
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin: 0;
+      }
+      .lb-close-btn {
+        background: transparent;
+        border: 1px solid #333;
+        color: #666;
+        font-size: 16px;
+        padding: 4px 10px;
+        cursor: pointer;
+        clip-path: none;
+        border-radius: 3px;
+        font-family: var(--font-main);
+      }
+      .lb-close-btn:hover { border-color: var(--neon-cyan); color: var(--neon-cyan); box-shadow: none; transform: none; }
+      .lb-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        overflow-y: auto;
+        flex: 1;
+        scrollbar-width: thin;
+        scrollbar-color: var(--neon-cyan) #111;
+      }
+      .lb-list li {
+        display: flex;
+        justify-content: space-between;
+        padding: 9px 6px;
         border-bottom: 1px solid #111;
         font-size: 13px;
       }
-      .leaderboard li:first-child { color: #ffd700; }
-      .leaderboard li:nth-child(2) { color: #c0c0c0; }
-      .leaderboard li:nth-child(3) { color: #cd7f32; }
+      .lb-list li:first-child { color: #ffd700; }
+      .lb-list li:nth-child(2) { color: #c0c0c0; }
+      .lb-list li:nth-child(3) { color: #cd7f32; }
     </style>
   </head>
   <body>
@@ -97,17 +160,27 @@
         <div id="unlocksPanel"></div>
       </div>
 
-      <!-- Leaderboard -->
-      <div class="profile-card leaderboard">
-        <h3>🏆 Global Leaderboard</h3>
-        <div id="leaderboardSkeleton">
-          <div class="skeleton" style="width:80%;"></div>
-          <div class="skeleton" style="width:65%;"></div>
-          <div class="skeleton" style="width:72%;"></div>
-          <div class="skeleton" style="width:55%;"></div>
-          <div class="skeleton" style="width:68%;"></div>
+      <!-- Leaderboard trigger -->
+      <div style="text-align:center; margin-bottom: 30px;">
+        <button class="primary-btn" onclick="openLeaderboard()" style="font-size:13px;padding:12px 28px;">🏆 View Global Leaderboard</button>
+      </div>
+    </div>
+
+    <!-- Leaderboard Modal -->
+    <div id="lbBackdrop" class="lb-modal-backdrop" role="dialog" aria-modal="true" aria-label="Global Leaderboard">
+      <div class="lb-modal">
+        <div class="lb-modal-header">
+          <h3>🏆 Global Leaderboard</h3>
+          <button class="lb-close-btn" onclick="closeLeaderboard()" aria-label="Close leaderboard">✕</button>
         </div>
-        <ul id="leaderboardList" style="display:none;"><li>Loading...</li></ul>
+        <div id="lbSkeleton">
+          <div class="skeleton" style="width:80%;margin:10px 0;"></div>
+          <div class="skeleton" style="width:65%;margin:10px 0;"></div>
+          <div class="skeleton" style="width:72%;margin:10px 0;"></div>
+          <div class="skeleton" style="width:55%;margin:10px 0;"></div>
+          <div class="skeleton" style="width:68%;margin:10px 0;"></div>
+        </div>
+        <ul id="lbList" class="lb-list" style="display:none;"></ul>
       </div>
     </div>
 
@@ -115,33 +188,63 @@
       import { auth, db } from "./js/firebase.js";
       import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
       import { getUserData } from "./js/xp.js";
-      import { collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+      import { collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
       import { UNLOCKS } from "./js/unlocks.js";
 
-      async function loadLeaderboard() {
+      let leaderboardLoaded = false;
+
+      async function loadLeaderboard(currentUserEmail) {
+        const skeleton = document.getElementById("lbSkeleton");
+        const list = document.getElementById("lbList");
         try {
-          const list = document.getElementById("leaderboardList");
-          const q = query(collection(db, "users"), orderBy("xp", "desc"), limit(5));
+          const q = query(collection(db, "users"), orderBy("xp", "desc"));
           const snap = await getDocs(q);
           list.innerHTML = "";
-          if (snap.empty) { list.innerHTML = "<li>No data available</li>"; }
-          else {
+          if (snap.empty) {
+            list.innerHTML = "<li style='color:#666;padding:12px 0;'>No players yet.</li>";
+          } else {
+            let rank = 1;
             snap.forEach(doc => {
               const data = doc.data();
               const li = document.createElement("li");
               const name = data.email ? data.email.split('@')[0] : "Anonymous";
-              li.innerHTML = `<span>${name}</span><span>${data.xp || 0} XP</span>`;
+              const isCurrentUser = data.email === currentUserEmail;
+              if (isCurrentUser) {
+                li.style.cssText = "background:rgba(0,243,255,0.08);border-left:2px solid var(--neon-cyan);padding-left:8px;font-weight:bold;";
+              }
+              li.innerHTML = `<span>#${rank} ${name}${isCurrentUser ? ' <span style="color:var(--neon-cyan);font-size:10px;">(you)</span>' : ''}</span><span>${data.xp || 0} XP</span>`;
               list.appendChild(li);
+              rank++;
             });
           }
-          document.getElementById("leaderboardSkeleton").style.display = "none";
+          skeleton.style.display = "none";
           list.style.display = "block";
+          leaderboardLoaded = true;
         } catch (e) {
-          document.getElementById("leaderboardSkeleton").style.display = "none";
-          document.getElementById("leaderboardList").innerHTML = "<li>Failed to load leaderboard</li>";
-          document.getElementById("leaderboardList").style.display = "block";
+          skeleton.style.display = "none";
+          list.innerHTML = "<li style='color:#ff4444;padding:12px 0;'>Failed to load leaderboard.</li>";
+          list.style.display = "block";
         }
       }
+
+      window.openLeaderboard = function() {
+        document.getElementById('lbBackdrop').classList.add('open');
+        if (!leaderboardLoaded) loadLeaderboard(window._currentUserEmail);
+      };
+
+      window.closeLeaderboard = function() {
+        document.getElementById('lbBackdrop').classList.remove('open');
+      };
+
+      // Close on backdrop click
+      document.getElementById('lbBackdrop').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('lbBackdrop')) closeLeaderboard();
+      });
+
+      // Close on Escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeLeaderboard();
+      });
 
       onAuthStateChanged(auth, async (user) => {
         if (!user) { window.location.href = "index.html"; return; }
@@ -209,7 +312,7 @@
               </div>`;
             }).join('');
 
-          await loadLeaderboard();
+          window._currentUserEmail = user.email;
         } catch (e) {
           console.error(e);
           document.getElementById("profileSkeleton").style.display = "none";
