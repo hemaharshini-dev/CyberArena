@@ -114,13 +114,13 @@ function updateTrust() {
   document.getElementById("trustBar").style.width = trust + "%";
 }
 
-function win() {
-  updateXP(20, 'social');
+async function win() {
+  const xpAwarded = await updateXP(20, 'social');
   const container = document.querySelector(".container");
   container.innerHTML = `
     <button class="back-btn" onclick="goHome()">← Back</button>
     <h1>🎉 Mission Complete</h1>
-    <h2 style="color:var(--neon-green);">✅ You resisted the attack!</h2>
+    <h2 style="color:var(--neon-green);">✅ You resisted the attack! ${!xpAwarded ? '<small style="color:#9ca3af;font-size:13px;">(Practice Mode — no XP)</small>' : ''}</h2>
 
     <div class="deep-dive" style="text-align:left; margin-top:20px; padding:20px; background:rgba(0,0,0,0.3); border: 1px solid var(--neon-cyan); border-radius:10px;">
       <h3>📖 Cyber Deep Dive: Social Engineering</h3>
@@ -137,7 +137,7 @@ function win() {
     <div id="safetyArea"></div>
 
     <div style="margin-top:25px; display:flex; gap:15px; justify-content:center;">
-      <button class="primary-btn" onclick="location.reload()">Play Again</button>
+      ${xpAwarded ? '<button class="primary-btn" onclick="location.reload()">Play Again</button>' : '<p style="color:#9ca3af;font-size:13px;">🔒 XP already earned. Replay anytime for practice — no XP awarded.</p>'}
       <button class="secondary-btn" onclick="goHome()">Back to Home</button>
     </div>
   `;

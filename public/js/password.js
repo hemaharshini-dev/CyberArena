@@ -154,13 +154,13 @@ simulateMFABtn.onclick = () => {
     verifyMFABtn.dataset.code = code;
 };
 
-verifyMFABtn.onclick = () => {
+verifyMFABtn.onclick = async () => {
     const entered = mfaCodeInput.value;
     const actual = verifyMFABtn.dataset.code;
 
     if (entered === actual) {
+        await updateXP(10, 'password');
         alert("✅ MFA Verified! 10 XP Gained.");
-        updateXP(10, 'password');
         mfaPrompt.style.display = "none";
     } else {
         alert("❌ Wrong code. Try again.");
@@ -184,26 +184,26 @@ function triggerFatiguePush() {
     fatigueCount++;
 }
 
-approveFatigueBtn.onclick = () => {
-    updateXP(-50, 'password');
+approveFatigueBtn.onclick = async () => {
+    await updateXP(-50, 'password');
     fatigueActive = false;
     fatigueModal.style.display = "none";
     showPasswordCompletion(false);
 };
 
-denyFatigueBtn.onclick = () => {
+denyFatigueBtn.onclick = async () => {
     if (fatigueCount < 3) {
         fatigueModal.style.display = "none";
         setTimeout(triggerFatiguePush, 1000);
     } else {
-        updateXP(30, 'password');
+        const xpAwarded = await updateXP(30, 'password');
         fatigueActive = false;
         fatigueModal.style.display = "none";
-        showPasswordCompletion(true);
+        showPasswordCompletion(true, xpAwarded);
     }
 };
 
-function showPasswordCompletion(resistedFatigue) {
+function showPasswordCompletion(resistedFatigue, xpAwarded = false) {
     const container = document.querySelector(".container");
     container.innerHTML = `
         <button class="back-btn" onclick="goHome()">← Back</button>
@@ -228,7 +228,7 @@ function showPasswordCompletion(resistedFatigue) {
         <div id="safetyArea"></div>
 
         <div style="margin-top:20px; display:flex; gap:15px; flex-wrap:wrap;">
-            <button class="primary-btn" onclick="location.reload()">🔁 Try Again</button>
+            ${xpAwarded ? '<button class="primary-btn" onclick="location.reload()">🔁 Try Again</button>' : '<p style="color:#9ca3af;font-size:13px;">🔒 XP already earned. Replay anytime for practice — no XP awarded.</p>'}
             <button class="secondary-btn" onclick="goHome()">🏠 Back to Home</button>
         </div>
     `;

@@ -8,22 +8,18 @@ import {
   arrayUnion,
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-function todayKey() {
-  return new Date().toISOString().slice(0, 10); // "YYYY-MM-DD"
-}
-
+// Returns true if XP was awarded, false if already earned before
 export async function updateXP(points, missionId = null) {
   const user = auth.currentUser;
-  if (!user) return;
+  if (!user) return false;
 
   const userRef = doc(db, "users", user.uid);
   const userSnap = await getDoc(userRef);
 
-  // Per-mission daily cap: only award XP once per mission per calendar day
+  // Permanent cap: only award XP once ever per mission
   if (missionId && userSnap.exists()) {
-    const played = userSnap.data().dailyXP || {};
-    const key = `${missionId}_${todayKey()}`;
-    if (played[key]) return;
+    const completed = userSnap.data().completedMissions || [];
+    if (completed.includes(missionId)) return false;
   }
 
   const updateData = {
@@ -32,7 +28,6 @@ export async function updateXP(points, missionId = null) {
   };
   if (missionId) {
     updateData.completedMissions = arrayUnion(missionId);
-    updateData[`dailyXP.${missionId}_${todayKey()}`] = true;
   }
 
   if (userSnap.exists()) {
@@ -43,10 +38,10 @@ export async function updateXP(points, missionId = null) {
       xp: points,
       missionsCompleted: 1,
       completedMissions: missionId ? [missionId] : [],
-      dailyXP: missionId ? { [`${missionId}_${todayKey()}`]: true } : {},
       achievements: [],
     });
   }
+  return true;
 }
 
 export async function getUserData() {

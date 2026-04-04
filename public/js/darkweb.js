@@ -36,26 +36,27 @@ searchBtn.onclick = () => {
     }, 1000);
 };
 
-window.submitAssessment = (level) => {
+window.submitAssessment = async (level) => {
     let correct = false;
+    let xpAwarded = false;
 
     if (window.currentQuery === "corp.com" && level === "Critical") {
         resultsBox.innerHTML += `<br/><span style="color:lightgreen;" role="alert">✅ [CORRECT] Plaintext passwords are a critical risk.</span>`;
-        updateXP(20, 'darkweb');
+        xpAwarded = await updateXP(20, 'darkweb');
         correct = true;
     } else if (window.currentQuery === "secure.net" && level === "Low") {
         resultsBox.innerHTML += `<br/><span style="color:lightgreen;" role="alert">✅ [CORRECT] Hashed passwords take time to crack, lower immediate risk.</span>`;
-        updateXP(20, 'darkweb');
+        xpAwarded = await updateXP(20, 'darkweb');
         correct = true;
     } else {
         resultsBox.innerHTML += `<br/><span style="color:red;" role="alert">❌ [WRONG] Incorrect risk assessment.</span>`;
     }
 
     assessmentDiv.style.display = "none";
-    setTimeout(() => showCompletion(correct), 1200);
+    setTimeout(() => showCompletion(correct, xpAwarded), 1200);
 };
 
-function showCompletion(correct) {
+function showCompletion(correct, xpAwarded = false) {
     const container = document.querySelector(".container");
     container.innerHTML = `
         <button class="back-btn" onclick="goHome()">← Back</button>
@@ -78,7 +79,7 @@ function showCompletion(correct) {
         <div id="safetyArea"></div>
 
         <div style="margin-top:20px; display:flex; gap:15px; flex-wrap:wrap;">
-            <button class="primary-btn" onclick="location.reload()">🔁 Try Again</button>
+            ${xpAwarded ? '<button class="primary-btn" onclick="location.reload()">🔁 Try Again</button>' : '<p style="color:#9ca3af;font-size:13px;">🔒 XP already earned. Replay anytime for practice — no XP awarded.</p>'}
             <button class="secondary-btn" onclick="goHome()">🏠 Back to Home</button>
         </div>
     `;

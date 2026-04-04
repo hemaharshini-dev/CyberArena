@@ -274,19 +274,19 @@ document.getElementById("nextBtn").onclick = () => {
 // =======================
 // RESULT
 // =======================
-function showResult() {
+async function showResult() {
   let badge = "";
 
   if (score >= 40) badge = "🛡️ Scam Shield";
   else if (score >= 20) badge = "🔍 Phishing Detective";
   else badge = "⚠️ Rookie";
 
-  updateXP(score, 'phishing');
+  const xpAwarded = await updateXP(score, 'phishing');
 
   document.body.innerHTML = `
   <div class="container" id="resultContainer">
     <h1>🎉 Mission Complete</h1>
-    <h2>XP: ${score}</h2>
+    <h2>XP: ${xpAwarded ? score : 0} ${!xpAwarded ? '<small style="color:#9ca3af;font-size:13px;">(already earned — Practice Mode)</small>' : ''}</h2>
     <h3>${badge}</h3>
 
     <div class="deep-dive" style="text-align:left; margin-top:20px; padding:15px; background:rgba(0,0,0,0.3); border-radius:10px;">
@@ -303,13 +303,8 @@ function showResult() {
     <div id="safetyArea"></div>
 
     <div style="margin-top:15px;">
-      <button class="primary-btn" onclick="location.reload()">
-        🔁 Play Again
-      </button>
-
-      <button class="secondary-btn" onclick="goHome()">
-        🏠 Back to Home
-      </button>
+      ${xpAwarded ? '<button class="primary-btn" onclick="location.reload()">🔁 Play Again</button>' : '<p style="color:#9ca3af;font-size:13px;">🔒 XP already earned for this mission. Replay anytime for practice — no XP awarded.</p>'}
+      <button class="secondary-btn" onclick="goHome()">🏠 Back to Home</button>
     </div>
   </div>
 `;

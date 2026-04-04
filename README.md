@@ -107,7 +107,7 @@ Missions are grouped into three categories on the Hub:
 | Mechanic | Description |
 | :--- | :--- |
 | **XP & Leaderboard** | Earn XP for every successful mission and climb the global ranks (stored in Firestore). |
-| **Daily XP Cap** | Each mission awards XP only once per calendar day — enforced server-side in Firestore. Replaying a mission after earning XP that day gives 0 XP, preventing spam farming. Resets at midnight. |
+| **XP Per Mission (Once Ever)** | Each mission awards XP only once per user, ever — enforced server-side in Firestore. Replaying a mission after earning XP shows a Practice Mode message and awards 0 XP. |
 | **Rank System** | Novice (0 XP) → Specialist (100 XP) → Elite Guardian (500 XP), with a progress bar. |
 | **Adaptive Difficulty** | Timer and scenario complexity scale with XP rank. Novice: 30s timer. Specialist: 27s + extra social engineering steps. Elite: 25s + extra steps. |
 | **Achievements / Badges** | Unlock badges: 🔰 Rookie (0 XP), 🔍 Detective (50 XP), 🛡️ Shield (200 XP), 👑 Elite (500 XP). |
@@ -234,13 +234,14 @@ CyberArena/
 
 ## 🔒 XP Integrity
 
-XP farming is prevented by a **per-mission daily cap** enforced server-side in Firestore:
+XP farming is prevented by a **permanent per-mission cap** enforced server-side in Firestore:
 
-- Each mission can award XP only **once per calendar day** per user.
-- On completion, `updateXP()` writes `dailyXP.{missionId}_{YYYY-MM-DD} = true` to the user's Firestore document.
-- On the next call for the same mission that day, the flag is detected before any write occurs and the function returns early.
-- The key is date-scoped, so XP resets naturally at midnight with no cleanup job needed.
+- Each mission can award XP only **once ever** per user — not once per day, but once total.
+- On first completion, `updateXP()` adds the `missionId` to the `completedMissions` array in the user's Firestore document.
+- On any subsequent attempt, the presence of `missionId` in `completedMissions` is detected before any write occurs and the function returns `false` — no XP is awarded.
+- `updateXP()` returns `true` if XP was awarded, `false` if already earned — mission screens use this to show a **Practice Mode** message instead of a Play Again button.
 - Because the check happens against Firestore (not `localStorage`), it cannot be bypassed by clearing browser storage.
+- Users can still replay any mission freely for learning — they just won't earn XP again.
 
 The Daily Challenge has its own separate replay protection via `dailyScores/{dateKey}/players` in Firestore.
 

@@ -106,16 +106,17 @@ function investigate(btn, clue) {
 // =======================
 // DECISION
 // =======================
-function makeDecision(userChoice) {
+async function makeDecision(userChoice) {
   const feedback = document.getElementById("feedback");
   const correct = userChoice === scenario.correct;
 
+  let xpAwarded = false;
   if (correct) {
     score += 10;
-    updateXP(score, 'ai');
+    xpAwarded = await updateXP(score, 'ai');
   } else {
     score -= 10;
-    updateXP(0, 'ai');
+    await updateXP(0, 'ai');
   }
 
   const resultLabel = correct
@@ -135,7 +136,7 @@ function makeDecision(userChoice) {
       <p><em>Case:</em> ${scenario.deepDive}</p>
     </div>
     <div style="margin-top:15px; display:flex; gap:10px; flex-wrap:wrap;">
-      <button class="primary-btn" onclick="location.reload()">🔁 Play Again</button>
+      ${xpAwarded ? '<button class="primary-btn" onclick="location.reload()">🔁 Play Again</button>' : '<p style="color:#9ca3af;font-size:13px;">🔒 XP already earned. Replay anytime for practice — no XP awarded.</p>'}
       <button class="secondary-btn" onclick="goHome()">🏠 Back</button>
     </div>
   `;

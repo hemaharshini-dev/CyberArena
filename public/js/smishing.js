@@ -114,12 +114,12 @@ function loadMessage() {
 
 window.handleDrop = (flaggedAsScam) => handleDecision(flaggedAsScam);
 
-window.handleDecision = (flaggedAsScam) => {
+window.handleDecision = async (flaggedAsScam) => {
     const msg = messages[currentIndex];
     if (flaggedAsScam === msg.isPhishing) {
         const extra = msg.qrCode?.warning ? `<br><small style="color:#fbbf24;">💡 ${msg.qrCode.warning}</small>` : '';
         feedback.innerHTML = `<span style="color:lightgreen;" role="alert">✅ Correct! Good call!</span>${extra}`;
-        updateXP(10, 'smishing');
+        await updateXP(10, 'smishing');
         totalXP += 10;
         correctCount++;
     } else {
@@ -167,7 +167,7 @@ function showCompletion() {
             <div id="safetyArea"></div>
 
             <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;">
-                <button class="primary-btn" onclick="location.reload()">🔁 Play Again</button>
+                <p style="color:#9ca3af;font-size:13px;">🔒 XP already earned. Replay anytime for practice — no XP awarded.</p>
                 <button class="secondary-btn" onclick="goHome()">🏠 Back to Home</button>
             </div>
         </div>
