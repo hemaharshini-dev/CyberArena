@@ -313,6 +313,112 @@ button:hover {
   animation: flash-red 0.5s ease-in-out;
 }
 
+/* ============================================================
+   🛬 LANDING PAGE — pre-login showcase
+============================================================ */
+.landing-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  width: 95%;
+  max-width: 860px;
+  padding: 40px 0 60px;
+}
+
+.landing-hero {
+  text-align: center;
+}
+
+.landing-title {
+  font-family: var(--font-cyber);
+  font-size: 42px;
+  color: var(--neon-cyan);
+  text-shadow: 0 0 20px var(--neon-cyan);
+  margin: 0 0 8px;
+  letter-spacing: 3px;
+}
+
+.landing-sub {
+  font-family: var(--font-cyber);
+  color: var(--neon-magenta);
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin: 0 0 12px;
+}
+
+.landing-desc {
+  color: #8899aa;
+  font-size: 14px;
+  margin: 0;
+}
+
+.landing-missions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  width: 100%;
+}
+
+.lm-card {
+  background: rgba(0, 243, 255, 0.04);
+  border: 1px solid rgba(0, 243, 255, 0.2);
+  padding: 20px 16px;
+  text-align: center;
+  border-radius: 4px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.lm-card:hover {
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 12px rgba(0, 243, 255, 0.15);
+}
+
+.lm-icon {
+  font-size: 28px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.lm-card strong {
+  font-family: var(--font-cyber);
+  color: var(--neon-cyan);
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.lm-card p {
+  color: #7a8a9a;
+  font-size: 11px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.landing-stats {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+  font-size: 12px;
+  color: var(--neon-green);
+  letter-spacing: 1px;
+}
+
+.landing-stats span::before {
+  content: '';
+}
+
+@media (max-width: 600px) {
+  .landing-title { font-size: 28px; }
+  .landing-missions { grid-template-columns: 1fr; }
+  .landing-stats { gap: 12px; font-size: 11px; }
+  .landing-wrap { padding: 20px 0 40px; }
+}
+
 /* 📱 AUTH BOX OVERHAUL */
 .auth-box {
   background: var(--terminal-bg);

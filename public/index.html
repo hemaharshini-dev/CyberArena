@@ -3,17 +3,55 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login - CyberArena</title>
+    <title>CyberArena — Cybersecurity Training Ground</title>
     <link rel="stylesheet" href="css/style.css" />
   </head>
 
   <body>
-    <div class="auth-box">
-      <h2>🛡️ CyberArena</h2>
-      <p class="subtitle">Train. Detect. Defend.</p>
+    <div class="landing-wrap">
 
-      <button class="google-btn" id="googleBtn">Sign in with Google</button>
-      <p id="auth-error" style="color:#ff4444;font-size:13px;margin-top:10px;text-align:center;"></p>
+      <!-- HERO -->
+      <div class="landing-hero">
+        <h1 class="landing-title">🛡️ CyberArena</h1>
+        <p class="landing-sub">The Ultimate Cybersecurity Training Ground</p>
+        <p class="landing-desc">Simulate real attacks. Make real decisions. Become an Elite Guardian.</p>
+      </div>
+
+      <!-- MISSION PREVIEW -->
+      <div class="landing-missions">
+        <div class="lm-card">
+          <span class="lm-icon">🎭</span>
+          <strong>Social Engineering</strong>
+          <p>Phishing Detective · Social Engineering Simulator</p>
+        </div>
+        <div class="lm-card">
+          <span class="lm-icon">💻</span>
+          <strong>Technical Defense</strong>
+          <p>Malware Escape · Password Lab · AI Crime Lab · Dark Web · Incident Response</p>
+        </div>
+        <div class="lm-card">
+          <span class="lm-icon">🛠️</span>
+          <strong>Tools & Knowledge</strong>
+          <p>Daily Challenge · Smishing Simulator · Mission Creator · Cyber-Wiki</p>
+        </div>
+      </div>
+
+      <!-- STATS STRIP -->
+      <div class="landing-stats">
+        <span>⚡ 11 Live Missions</span>
+        <span>🏆 XP & Leaderboard</span>
+        <span>🤖 AI-Generated Scenarios</span>
+        <span>📈 Adaptive Difficulty</span>
+      </div>
+
+      <!-- AUTH BOX -->
+      <div class="auth-box">
+        <h2>Start Training</h2>
+        <p class="subtitle" style="margin-bottom:20px;color:#aaa;font-size:13px;">Sign in to track XP, earn badges, and climb the global leaderboard.</p>
+        <button class="google-btn" id="googleBtn">Sign in with Google</button>
+        <p id="auth-error" style="color:#ff4444;font-size:13px;margin-top:10px;text-align:center;"></p>
+      </div>
+
     </div>
 
     <script type="module" src="js/auth.js"></script>
